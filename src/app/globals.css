@@ -1,26 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary-orange: #FF6B35;
+  --orange-dark: #E55A2B;
+  --orange-light: #FF8C42;
+  --dark-blue: #1E3A5F;
+  --light-blue: #2D4F7C;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  
+  --color-orange-500: #FF6B35;
+  --color-orange-600: #E55A2B;
+  --color-orange-400: #FF8C42;
+  --color-orange-50: #FFF7ED;
+  
+  --animate-fade-in-up: fade-in-up 0.6s ease-out;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.hero-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+  background-size: 20px 20px;
 }
+

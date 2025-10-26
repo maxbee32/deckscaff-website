@@ -1,36 +1,205 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+DeckScaff - Scaffolding Materials Website
+Overview
+DeckScaff is a modern, responsive website for a scaffolding materials company that showcases their inventory of rental and sale equipment. Built with Next.js, React, and Tailwind CSS, the website provides an intuitive user experience for browsing scaffolding products and contacting the company.
 
-## Getting Started
+Features
+🏗️ Product Catalog
+Comprehensive Inventory: Display of various scaffolding systems and accessories
 
-First, run the development server:
+Dual Options: Materials available for both rental and purchase
 
-```bash
+Categorization: Organized by scaffolding types, accessories, fittings, and safety equipment
+
+Status Tracking: Real-time availability status (Available, Limited Stock, Coming Soon)
+
+🔍 Advanced Filtering
+Type Filters: Filter by "All Materials", "For Rent", or "For Sale"
+
+Category Filters: Dropdown selection for specific product categories
+
+Real-time Updates: Instant filtering without page reloads
+
+📱 User Experience
+Responsive Design: Optimized for desktop, tablet, and mobile devices
+
+Interactive Cards: Hover effects and smooth animations
+
+Visual Status Indicators: Color-coded availability badges
+
+Feature Highlights: Key product features with checkmark icons
+
+💬 Contact Integration
+Microsoft Teams Integration:
+
+Join Teams meetings via web
+
+Start direct Teams chats
+
+Desktop app deep linking
+
+Multiple Contact Options: Meeting joins, direct messaging, and phone calls
+
+Technology Stack
+Frontend
+Next.js 14 - React framework with App Router
+
+TypeScript - Type-safe development
+
+Tailwind CSS - Utility-first CSS framework
+
+React Hooks - State management (useState)
+
+Design Features
+Modern UI/UX - Clean, professional scaffolding industry design
+
+Orange Color Scheme - Brand-appropriate coloring
+
+Card-based Layout - Consistent product presentation
+
+Gradient Backgrounds - Visual appeal and depth
+
+Product Categories
+Scaffolding Systems
+Kwikstage Scaffolding System
+
+Cuplock Scaffolding
+
+Mobile Tower Scaffolds
+
+Structural Components
+Scaffolding Tubes
+
+Scaffolding Couplers
+
+Safety & Accessories
+Safety Guardrails
+
+Scaffolding Boards
+
+Formwork Systems (Coming Soon)
+
+Project Structure
+text
+deckscaff/
+├── app/
+│   ├── layout.tsx          # Root layout with metadata
+│   ├── page.tsx           # Homepage component
+│   └── favicon.ico        # Website favicon
+├── components/
+│   └── Materials.tsx      # Main materials component
+├── public/                # Static assets
+└── package.json
+Getting Started
+Prerequisites
+Node.js 18+
+
+npm or yarn
+
+Installation
+Clone the repository
+
+Install dependencies:
+
+bash
+npm install
+Run the development server:
+
+bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000 in your browser
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Building for Production
+bash
+npm run build
+npm start
+Customization
+Updating Products
+Edit the materials array in Materials.tsx to:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Add new products
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Update pricing and availability
 
-## Learn More
+Modify categories and features
 
-To learn more about Next.js, take a look at the following resources:
+Styling
+Modify Tailwind classes in components
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Update color scheme in utility classes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Adjust responsive breakpoints as needed
 
-## Deploy on Vercel
+Contact Information
+Update Teams links and phone numbers in the contact section:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Replace Teams meeting URLs
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Update chat links with actual email
+
+Modify phone numbers for your region
+
+Key Components
+Materials Component
+Product grid display
+
+Filtering logic
+
+Status management
+
+Contact modal
+
+Product Cards
+Image/icon display
+
+Feature lists
+
+Action buttons
+
+Status badges
+
+Business Benefits
+For Customers
+Easy Browsing: Intuitive product discovery
+
+Quick Filtering: Find relevant materials fast
+
+Clear Pricing: Rental vs purchase options
+
+Direct Contact: Multiple ways to reach the company
+
+For the Business
+Professional Presence: Modern online showcase
+
+Lead Generation: Clear call-to-action buttons
+
+Inventory Management: Visual stock status
+
+Competitive Edge: Tech-forward approach in traditional industry
+
+Future Enhancements
+Planned Features
+Shopping cart functionality
+
+Online booking system
+
+Customer account portal
+
+Inventory management dashboard
+
+Integration with CRM systems
+
+Multi-language support
+
+Advanced search functionality
+
+Support
+For technical support or questions about this website:
+
+Contact the development team
+
+Refer to Next.js and Tailwind CSS documentation
+
+Check browser console for any errors
+
+License
+This project is built for DeckScaff company. All rights reserved
