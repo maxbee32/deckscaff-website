@@ -156,13 +156,14 @@ const materials: MaterialItem[] = [
     ],
     status: "available",
   },
-   {
+  {
     id: 10,
     name: "Timber Formwork",
     type: "sale",
     category: "Formwork",
     image: "/images/timber-formwork.jpeg",
-    description: "High-quality timber formwork for concrete molding and shaping",
+    description:
+      "High-quality timber formwork for concrete molding and shaping",
     features: [
       "Premium Timber",
       "Smooth Finish",
@@ -174,11 +175,15 @@ const materials: MaterialItem[] = [
 ];
 
 export default function Materials() {
-  const [activeFilter, setActiveFilter] = useState<"all" | "rental" | "sale">("all");
+  const [activeFilter, setActiveFilter] = useState<"all" | "rental" | "sale">(
+    "all"
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showCallOptions, setShowCallOptions] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
-  const [selectedMaterial, setSelectedMaterial] = useState<MaterialItem | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialItem | null>(
+    null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -189,7 +194,7 @@ export default function Materials() {
     phone: "",
     company: "",
     projectDetails: "",
-    quantity: "1"
+    quantity: "1",
   });
 
   const categories = [
@@ -199,7 +204,8 @@ export default function Materials() {
 
   const filteredMaterials = materials.filter((item) => {
     const typeMatch = activeFilter === "all" || item.type === activeFilter;
-    const categoryMatch = selectedCategory === "all" || item.category === selectedCategory;
+    const categoryMatch =
+      selectedCategory === "all" || item.category === selectedCategory;
     return typeMatch && categoryMatch;
   });
 
@@ -240,11 +246,15 @@ export default function Materials() {
     setIsSubmitted(false);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     if (error) setError("");
   };
@@ -255,9 +265,12 @@ export default function Materials() {
     setError("");
 
     // EmailJS credentials from environment variables
-    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_ym97vfw';
-    const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_47fiyww';
-    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'WD_oOMLqiTWDD4V08';
+    const serviceID =
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_ym97vfw";
+    const templateID =
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_47fiyww";
+    const publicKey =
+      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "WD_oOMLqiTWDD4V08";
 
     try {
       // Check if all credentials are properly set
@@ -273,13 +286,20 @@ export default function Materials() {
         from_email: formData.email,
         phone: formData.phone,
         company: formData.company || "Not provided",
-        project_type: selectedMaterial?.type === "rental" ? "Rental Request" : "Purchase Quote",
+        project_type:
+          selectedMaterial?.type === "rental"
+            ? "Rental Request"
+            : "Purchase Quote",
         material_name: selectedMaterial?.name || "Not specified",
         material_category: selectedMaterial?.category || "Not specified",
         quantity: formData.quantity,
         message: formData.projectDetails,
         to_email: "deckscaffgh@outlook.com",
-        subject: `${selectedMaterial?.type === "rental" ? "Rental Request" : "Quote Request"} - ${selectedMaterial?.name}`,
+        subject: `${
+          selectedMaterial?.type === "rental"
+            ? "Rental Request"
+            : "Quote Request"
+        } - ${selectedMaterial?.name}`,
         reply_to: formData.email,
       };
 
@@ -299,10 +319,10 @@ export default function Materials() {
           phone: "",
           company: "",
           projectDetails: "",
-          quantity: "1"
+          quantity: "1",
         });
         setIsSubmitted(true);
-        
+
         // Hide success message after 8 seconds
         setTimeout(() => {
           setIsSubmitted(false);
@@ -470,7 +490,7 @@ export default function Materials() {
 
                 {/* Action Buttons */}
                 <div className="flex space-x-3">
-                  <button 
+                  <button
                     onClick={() => handleQuoteRequest(material)}
                     className="flex-1 bg-orange-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-300 text-sm"
                   >
@@ -583,7 +603,7 @@ export default function Materials() {
 
       {/* Contact Form Modal */}
       {showContactModal && selectedMaterial && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
           onClick={handleBackdropClick}
         >
@@ -591,19 +611,31 @@ export default function Materials() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-2xl font-bold text-gray-900">
-                  {selectedMaterial.type === "rental" ? "Request Rental" : "Get Quote"}
+                  {selectedMaterial.type === "rental"
+                    ? "Request Rental"
+                    : "Get Quote"}
                 </h3>
                 <button
                   onClick={() => setShowContactModal(false)}
                   className="text-gray-400 hover:text-gray-600 transition-colors"
                   disabled={isSubmitting}
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
-              
+
               {/* Success Message */}
               {isSubmitted && (
                 <div className="mb-6 p-4 bg-green-50 border-2 border-green-300 rounded-2xl">
@@ -628,7 +660,8 @@ export default function Materials() {
                         Request Sent Successfully!
                       </h3>
                       <p className="text-green-700 mt-1 text-sm">
-                        Thank you for your request. We'll contact you within 2 hours.
+                        Thank you for your request. We&apos;ll contact you
+                        within 2 hours.
                       </p>
                     </div>
                   </div>
@@ -661,22 +694,28 @@ export default function Materials() {
                   </div>
                 </div>
               )}
-              
+
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-3">
-                  <img 
-                    src={selectedMaterial.image} 
+                  <img
+                    src={selectedMaterial.image}
                     alt={selectedMaterial.name}
                     className="w-12 h-12 object-cover rounded"
                   />
                   <div>
-                    <h4 className="font-semibold text-gray-900">{selectedMaterial.name}</h4>
-                    <p className="text-sm text-gray-600">{selectedMaterial.category}</p>
-                    <p className="text-xs text-gray-500 capitalize">{selectedMaterial.type}</p>
+                    <h4 className="font-semibold text-gray-900">
+                      {selectedMaterial.name}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {selectedMaterial.category}
+                    </p>
+                    <p className="text-xs text-gray-500 capitalize">
+                      {selectedMaterial.type}
+                    </p>
                   </div>
                 </div>
               </div>
-              
+
               <form onSubmit={handleFormSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -693,7 +732,7 @@ export default function Materials() {
                     placeholder="Enter your full name"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Email Address *
@@ -709,7 +748,7 @@ export default function Materials() {
                     placeholder="Enter your email"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Phone Number *
@@ -753,14 +792,16 @@ export default function Materials() {
                       disabled={isSubmitting || isSubmitted}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                     >
-                      {[1, 2, 3, 4, 5, 10, 15, 20, 25, 50].map(num => (
-                        <option key={num} value={num}>{num}</option>
+                      {[1, 2, 3, 4, 5, 10, 15, 20, 25, 50].map((num) => (
+                        <option key={num} value={num}>
+                          {num}
+                        </option>
                       ))}
                       <option value="custom">Custom Quantity</option>
                     </select>
                   </div>
                 )}
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Project Details *
@@ -776,15 +817,15 @@ export default function Materials() {
                     placeholder="Tell us about your project requirements, timeline, and any specific needs..."
                   />
                 </div>
-                
+
                 <div className="flex gap-3 pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting || isSubmitted}
                     className={`flex-1 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center ${
                       isSubmitting || isSubmitted
-                        ? 'bg-gray-400 cursor-not-allowed text-white' 
-                        : 'bg-orange-500 hover:bg-orange-600 text-white'
+                        ? "bg-gray-400 cursor-not-allowed text-white"
+                        : "bg-orange-500 hover:bg-orange-600 text-white"
                     }`}
                   >
                     {isSubmitting ? (
