@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 interface MaterialItem {
   id: number;
@@ -18,7 +19,7 @@ const materials: MaterialItem[] = [
     name: "Kwikstage Scaffolding System",
     type: "rental",
     category: "Scaffolding",
-    image: "🪜",
+    image: "/images/kwikstage.png",
     description:
       "Complete Kwikstage scaffolding systems for safe and efficient access at height",
     features: [
@@ -34,7 +35,7 @@ const materials: MaterialItem[] = [
     name: "Cuplock Scaffolding",
     type: "rental",
     category: "Scaffolding",
-    image: "🔗",
+    image: "/images/services/acess-scaffolding.jpeg",
     description:
       "Versatile cuplock system ideal for complex structures and high-rise buildings",
     features: [
@@ -47,10 +48,10 @@ const materials: MaterialItem[] = [
   },
   {
     id: 3,
-    name: "Scaffolding Boards",
+    name: "Yellow Boards",
     type: "sale",
     category: "Accessories",
-    image: "📏",
+    image: "/images/yellow-board.png",
     description:
       "Premium quality scaffolding boards for safe working platforms",
     features: [
@@ -66,7 +67,7 @@ const materials: MaterialItem[] = [
     name: "Mobile Tower Scaffolds",
     type: "rental",
     category: "Scaffolding",
-    image: "🏗️",
+    image: "/images/moving-scaffolds.jpeg",
     description:
       "Portable tower scaffolds for interior work and maintenance projects",
     features: [
@@ -82,7 +83,7 @@ const materials: MaterialItem[] = [
     name: "Scaffolding Couplers",
     type: "sale",
     category: "Fittings",
-    image: "🔩",
+    image: "/images/scaffolding couplers.jpg",
     description: "High-strength steel couplers for secure tube connections",
     features: [
       "Drop Forged Steel",
@@ -94,32 +95,33 @@ const materials: MaterialItem[] = [
   },
   {
     id: 6,
-    name: "Safety Guardrails",
+    name: "Hollow Beams",
     type: "rental",
-    category: "Safety",
-    image: "🚧",
+    category: "Structural",
+    image: "/images/hollow-beams.jpeg",
     description:
-      "Complete guardrail systems for fall protection and edge security",
+      "High-strength hollow beams for superior load-bearing capacity and structural support",
     features: [
-      "Quick Installation",
-      "Adjustable Height",
-      "High Visibility",
-      "OSHA Compliant",
+      "High Load Capacity",
+      "Lightweight Design",
+      "Corrosion Resistant",
+      "Easy Installation",
     ],
     status: "available",
   },
   {
     id: 7,
-    name: "Scaffolding Tubes",
+    name: "Props Scaffolding",
     type: "sale",
     category: "Structural",
-    image: "🎋",
-    description: "High-quality steel tubes in various diameters and lengths",
+    image: "/images/props.jpeg",
+    description:
+      "Adjustable steel props for temporary support and shoring systems",
     features: [
-      "Galvanized Finish",
+      "Height Adjustable",
+      "High Strength Steel",
+      "Easy to Install",
       "Multiple Sizes",
-      "High Strength",
-      "Long Life",
     ],
     status: "available",
   },
@@ -128,7 +130,7 @@ const materials: MaterialItem[] = [
     name: "Formwork Systems",
     type: "rental",
     category: "Formwork",
-    image: "🧱",
+    image: "/images/formwork-sales.jpeg",
     description: "Advanced formwork systems for concrete construction projects",
     features: [
       "Reusable",
@@ -136,16 +138,59 @@ const materials: MaterialItem[] = [
       "High Load Capacity",
       "Precise Finish",
     ],
-    status: "coming-soon",
+    status: "available",
+  },
+  {
+    id: 9,
+    name: "I-Beam",
+    type: "sale",
+    category: "Structural",
+    image: "/images/H-Beam.jpg",
+    description:
+      "Heavy-duty H-beams for major structural support and construction projects",
+    features: [
+      "High Load Bearing",
+      "Versatile Applications",
+      "Durable Steel",
+      "Various Sizes Available",
+    ],
+    status: "available",
+  },
+   {
+    id: 10,
+    name: "Timber Formwork",
+    type: "sale",
+    category: "Formwork",
+    image: "/images/timber-formwork.jpeg",
+    description: "High-quality timber formwork for concrete molding and shaping",
+    features: [
+      "Premium Timber",
+      "Smooth Finish",
+      "Reusable",
+      "Easy to Cut & Shape",
+    ],
+    status: "available",
   },
 ];
 
 export default function Materials() {
-  const [activeFilter, setActiveFilter] = useState<"all" | "rental" | "sale">(
-    "all"
-  );
+  const [activeFilter, setActiveFilter] = useState<"all" | "rental" | "sale">("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showCallOptions, setShowCallOptions] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialItem | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    projectDetails: "",
+    quantity: "1"
+  });
 
   const categories = [
     "all",
@@ -154,8 +199,7 @@ export default function Materials() {
 
   const filteredMaterials = materials.filter((item) => {
     const typeMatch = activeFilter === "all" || item.type === activeFilter;
-    const categoryMatch =
-      selectedCategory === "all" || item.category === selectedCategory;
+    const categoryMatch = selectedCategory === "all" || item.category === selectedCategory;
     return typeMatch && categoryMatch;
   });
 
@@ -189,10 +233,100 @@ export default function Materials() {
     setShowCallOptions(true);
   };
 
+  const handleQuoteRequest = (material: MaterialItem) => {
+    setSelectedMaterial(material);
+    setShowContactModal(true);
+    setError("");
+    setIsSubmitted(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    if (error) setError("");
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+
+    // EmailJS credentials from environment variables
+    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_ym97vfw';
+    const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_47fiyww';
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'WD_oOMLqiTWDD4V08';
+
+    try {
+      // Check if all credentials are properly set
+      if (!serviceID || !templateID || !publicKey) {
+        throw new Error(
+          "Email service not configured. Please contact us directly at deckscaffgh@outlook.com"
+        );
+      }
+
+      // Prepare template parameters
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone,
+        company: formData.company || "Not provided",
+        project_type: selectedMaterial?.type === "rental" ? "Rental Request" : "Purchase Quote",
+        material_name: selectedMaterial?.name || "Not specified",
+        material_category: selectedMaterial?.category || "Not specified",
+        quantity: formData.quantity,
+        message: formData.projectDetails,
+        to_email: "deckscaffgh@outlook.com",
+        subject: `${selectedMaterial?.type === "rental" ? "Rental Request" : "Quote Request"} - ${selectedMaterial?.name}`,
+        reply_to: formData.email,
+      };
+
+      // Send email using EmailJS
+      const result = await emailjs.send(
+        serviceID,
+        templateID,
+        templateParams,
+        publicKey
+      );
+
+      if (result.status === 200) {
+        // Reset form on success
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          company: "",
+          projectDetails: "",
+          quantity: "1"
+        });
+        setIsSubmitted(true);
+        
+        // Hide success message after 8 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setShowContactModal(false);
+          setSelectedMaterial(null);
+        }, 8000);
+      } else {
+        throw new Error("Failed to send email");
+      }
+    } catch (err) {
+      console.error("Email sending error:", err);
+      setError(
+        "There was an error sending your request. Please try again or contact us directly at deckscaffgh@outlook.com"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Close dropdown when clicking outside
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       setShowCallOptions(false);
+      setShowContactModal(false);
     }
   };
 
@@ -266,8 +400,12 @@ export default function Materials() {
             >
               {/* Header with Image */}
               <div className="relative">
-                <div className="h-48 bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform duration-300">
-                  {material.image}
+                <div className="h-48 bg-gray-100 overflow-hidden">
+                  <img
+                    src={material.image}
+                    alt={material.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
 
                 {/* Status Badge */}
@@ -332,7 +470,10 @@ export default function Materials() {
 
                 {/* Action Buttons */}
                 <div className="flex space-x-3">
-                  <button className="flex-1 bg-orange-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-300 text-sm">
+                  <button 
+                    onClick={() => handleQuoteRequest(material)}
+                    className="flex-1 bg-orange-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-300 text-sm"
+                  >
                     {material.type === "rental"
                       ? "Request Rental"
                       : "Get Quote"}
@@ -350,7 +491,7 @@ export default function Materials() {
         <div className="mt-16 text-center">
           <div className="bg-white rounded-2xl p-8 shadow-lg relative">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Can't Find What You Need?
+              Can&apos;t Find What You Need?
             </h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
               We source and supply custom scaffolding solutions. Contact us for
@@ -391,41 +532,39 @@ export default function Materials() {
                         Choose Call Method
                       </h4>
                       <div className="space-y-3 mb-4">
-                        <div className="space-y-3 mb-4">
-                          <a
-                            href="https://teams.live.com/meet/9349626922813?p=wvBRx3ZSN9A4iz925h"
-                            className="flex items-center gap-3 w-full text-left px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 font-semibold"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setShowCallOptions(false)}
+                        <a
+                          href="https://teams.live.com/meet/9349626922813?p=wvBRx3ZSN9A4iz925h"
+                          className="flex items-center gap-3 w-full text-left px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 font-semibold"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShowCallOptions(false)}
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <svg
-                              className="w-5 h-5"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13.5v-7a.5.5 0 01.8-.4l4.67 3.5c.27.2.27.6 0 .8l-4.67 3.5a.5.5 0 01-.8-.4z" />
-                            </svg>
-                            Join Teams Meeting (Web)
-                          </a>
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13.5v-7a.5.5 0 01.8-.4l4.67 3.5c.27.2.27.6 0 .8l-4.67 3.5a.5.5 0 01-.8-.4z" />
+                          </svg>
+                          Join Teams Meeting (Web)
+                        </a>
 
-                          <a
-                            href="https://teams.microsoft.com/l/chat/0/0?users=deckscaffgh@outlook.com"
-                            className="flex items-center gap-3 w-full text-left px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setShowCallOptions(false)}
+                        <a
+                          href="https://teams.microsoft.com/l/chat/0/0?users=deckscaffgh@outlook.com"
+                          className="flex items-center gap-3 w-full text-left px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShowCallOptions(false)}
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <svg
-                              className="w-5 h-5"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
-                            </svg>
-                            Start Teams Chat
-                          </a>
-                        </div>
+                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+                          </svg>
+                          Start Teams Chat
+                        </a>
                       </div>
                       <button
                         onClick={() => setShowCallOptions(false)}
@@ -441,6 +580,256 @@ export default function Materials() {
           </div>
         </div>
       </div>
+
+      {/* Contact Form Modal */}
+      {showContactModal && selectedMaterial && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={handleBackdropClick}
+        >
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  {selectedMaterial.type === "rental" ? "Request Rental" : "Get Quote"}
+                </h3>
+                <button
+                  onClick={() => setShowContactModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  disabled={isSubmitting}
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              {/* Success Message */}
+              {isSubmitted && (
+                <div className="mb-6 p-4 bg-green-50 border-2 border-green-300 rounded-2xl">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <svg
+                        className="size-6 text-green-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-bold text-green-800">
+                        Request Sent Successfully!
+                      </h3>
+                      <p className="text-green-700 mt-1 text-sm">
+                        Thank you for your request. We'll contact you within 2 hours.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border-2 border-red-300 rounded-2xl">
+                  <div className="flex items-start">
+                    <svg
+                      className="size-6 text-red-500 mr-3 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <h3 className="text-sm font-bold text-red-800">
+                        Unable to Send Request
+                      </h3>
+                      <p className="text-red-700 mt-1 text-sm">{error}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={selectedMaterial.image} 
+                    alt={selectedMaterial.name}
+                    className="w-12 h-12 object-cover rounded"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{selectedMaterial.name}</h4>
+                    <p className="text-sm text-gray-600">{selectedMaterial.category}</p>
+                    <p className="text-xs text-gray-500 capitalize">{selectedMaterial.type}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting || isSubmitted}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting || isSubmitted}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting || isSubmitted}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Company
+                  </label>
+                  <input
+                    type="text"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleInputChange}
+                    disabled={isSubmitting || isSubmitted}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    placeholder="Your company name"
+                  />
+                </div>
+
+                {selectedMaterial.type === "sale" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Quantity
+                    </label>
+                    <select
+                      name="quantity"
+                      value={formData.quantity}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting || isSubmitted}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    >
+                      {[1, 2, 3, 4, 5, 10, 15, 20, 25, 50].map(num => (
+                        <option key={num} value={num}>{num}</option>
+                      ))}
+                      <option value="custom">Custom Quantity</option>
+                    </select>
+                  </div>
+                )}
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Project Details *
+                  </label>
+                  <textarea
+                    name="projectDetails"
+                    value={formData.projectDetails}
+                    onChange={handleInputChange}
+                    required
+                    rows={3}
+                    disabled={isSubmitting || isSubmitted}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed resize-none"
+                    placeholder="Tell us about your project requirements, timeline, and any specific needs..."
+                  />
+                </div>
+                
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || isSubmitted}
+                    className={`flex-1 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center ${
+                      isSubmitting || isSubmitted
+                        ? 'bg-gray-400 cursor-not-allowed text-white' 
+                        : 'bg-orange-500 hover:bg-orange-600 text-white'
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-3 size-5 text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : isSubmitted ? (
+                      "Request Sent!"
+                    ) : (
+                      "Submit Request"
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowContactModal(false)}
+                    disabled={isSubmitting}
+                    className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitted ? "Close" : "Cancel"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
