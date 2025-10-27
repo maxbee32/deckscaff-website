@@ -1,69 +1,68 @@
-'use client'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
+"use client";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface ClientLogo {
-  name: string
-  logo: string
-  width: number
-  height: number
+  name: string;
+  logo: string;
+  width: number;
+  height: number;
 }
 
 const clientLogos: ClientLogo[] = [
-  
   {
     name: "Nestle Ghana",
     logo: "/images/clients/chico.jpeg",
     width: 160,
-    height: 80
+    height: 80,
   },
-   {
+  {
     name: "LC Limited",
     logo: "/images/clients/lc.jpeg",
     width: 160,
-    height: 80
+    height: 80,
   },
   {
     name: "First Sky Limited",
     logo: "/images/clients/first.jpeg",
     width: 160,
-    height: 80
+    height: 80,
   },
   {
     name: "Jenspak Limited",
     logo: "/images/clients/jen.jpeg",
     width: 160,
-    height: 80
+    height: 80,
   },
   {
     name: "Lynks Entertainment",
     logo: "/images/clients/lynx.jpeg",
     width: 160,
-    height: 80
+    height: 80,
   },
   {
     name: "Chicos Construction",
     logo: "/images/clients/china.jpeg",
     width: 160,
-    height: 80
+    height: 80,
   },
   {
     name: "White Beam Concepts",
     logo: "/images/clients/lyco.jpeg",
     width: 160,
-    height: 80
-  }
-]
+    height: 80,
+  },
+];
 
 export default function ClientLogos() {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true)
-  }, [])
+    setIsVisible(true);
+  }, []);
 
   // Duplicate the logos for seamless scrolling
-  const duplicatedLogos = [...clientLogos, ...clientLogos]
+  const duplicatedLogos = [...clientLogos, ...clientLogos];
 
   return (
     <section className="py-16 bg-gray-50">
@@ -73,7 +72,8 @@ export default function ClientLogos() {
             Trusted by Industry Leaders
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            We're proud to have collaborated with reputable companies and organizations across Ghana
+            We&apos;re proud to have collaborated with reputable companies and
+            organizations across Ghana
           </p>
         </div>
 
@@ -82,14 +82,17 @@ export default function ClientLogos() {
           {/* Gradient Overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 to-transparent z-10"></div>
           <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-50 to-transparent z-10"></div>
-          
+
           {/* Scrolling Logos */}
           <div className="flex space-x-12 animate-scroll">
             {duplicatedLogos.map((client, index) => (
               <div
                 key={`${client.name}-${index}`}
                 className="flex-shrink-0 flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-105"
-                style={{ width: `${client.width}px`, height: `${client.height}px` }}
+                style={{
+                  width: `${client.width}px`,
+                  height: `${client.height}px`,
+                }}
               >
                 <Image
                   src={client.logo}
@@ -110,7 +113,11 @@ export default function ClientLogos() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(calc(-160px * ${clientLogos.length} - 12px * ${clientLogos.length}));
+            transform: translateX(
+              calc(
+                -160px * ${clientLogos.length} - 12px * ${clientLogos.length}
+              )
+            );
           }
         }
         .animate-scroll {
@@ -121,5 +128,5 @@ export default function ClientLogos() {
         }
       `}</style>
     </section>
-  )
+  );
 }

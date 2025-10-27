@@ -43,9 +43,12 @@ export default function Contact() {
     setError("");
 
     // EmailJS credentials from environment variables
-    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_ym97vfw';
-    const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_47fiyww';
-    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'WD_oOMLqiTWDD4V08';
+    const serviceID =
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_ym97vfw";
+    const templateID =
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_47fiyww";
+    const publicKey =
+      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "WD_oOMLqiTWDD4V08";
 
     try {
       // Check if all credentials are properly set
@@ -87,10 +90,10 @@ export default function Contact() {
           message: "",
         });
         setIsSubmitted(true);
-        
+
         // Scroll to top of form to show success message
-        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        
+        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
         // Hide success message after 8 seconds (longer so user can read it)
         setTimeout(() => {
           setIsSubmitted(false);
@@ -103,9 +106,9 @@ export default function Contact() {
       setError(
         "There was an error sending your message. Please try again or contact us directly at deckscaffgh@outlook.com"
       );
-      
+
       // Scroll to show error message
-      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     } finally {
       setIsSubmitting(false);
     }
@@ -257,9 +260,9 @@ export default function Contact() {
                 Quick Response Guarantee
               </h3>
               <p className="text-gray-600 text-sm">
-                We understand that construction projects move fast. That's why
-                we guarantee to respond to all inquiries within 2 hours during
-                business hours.
+                We understand that construction projects move fast. That&apos;s
+                why we guarantee to respond to all inquiries within 2 hours
+                during business hours.
               </p>
             </div>
           </div>
@@ -290,7 +293,8 @@ export default function Contact() {
                       Message Sent Successfully!
                     </h3>
                     <p className="text-green-700 mt-1">
-                      Thank you for your inquiry. We've received your quote request and will contact you within 2 hours.
+                      Thank you for your inquiry. We&apos;ve received your quote
+                      request and will contact you within 2 hours.
                     </p>
                     <div className="mt-3 flex items-center text-sm text-green-600">
                       <svg
@@ -501,7 +505,8 @@ export default function Contact() {
               </button>
 
               <p className="text-sm text-gray-500 text-center">
-                We'll contact you within 2 hours to discuss your project requirements.
+                We&apos;ll contact you within 2 hours to discuss your project
+                requirements.
               </p>
             </form>
           </div>
