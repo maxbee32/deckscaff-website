@@ -267,8 +267,8 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Contact Form */}
-          <div className="bg-gray-50 rounded-2xl p-8" ref={formRef}>
+          {/* Contact Form - REMOVED THE REF FROM THIS DIV */}
+          <div className="bg-gray-50 rounded-2xl p-8">
             {/* Success Message - More Prominent */}
             {isSubmitted && (
               <div className="mb-6 p-6 bg-green-50 border-2 border-green-300 rounded-2xl shadow-lg">
@@ -344,7 +344,8 @@ export default function Contact() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            {/* FORM ELEMENT KEEPS THE REF */}
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label
