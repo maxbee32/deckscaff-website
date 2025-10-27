@@ -42,8 +42,27 @@ export default function Hero() {
               </a>
             </div>
 
+            {/* Standards Section - Moved here */}
+            <div className="pt-8">
+              <h3 className="text-white font-semibold mb-4">Compliant with International Standards:</h3>
+              <div className="flex flex-wrap gap-3">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
+                  <span className="text-white text-sm">EN Standards</span>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
+                  <span className="text-white text-sm">AS/NZS</span>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
+                  <span className="text-white text-sm">SANS</span>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
+                  <span className="text-white text-sm">BS Code</span>
+                </div>
+              </div>
+            </div>
+
             {/* Professional Stats */}
-            <div className="grid grid-cols-3 gap-8 pt-12 border-t border-white/20">
+            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-white/20">
               <div>
                 <div className="text-3xl font-bold text-white">15+</div>
                 <div className="text-white/70 text-sm font-medium">Years Experience</div>
@@ -59,38 +78,16 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Professional Hero Visual - Updated with larger image */}
+          {/* Clean Hero Image - No overlay */}
           <div className={`relative ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
-              {/* Larger Hero Image */}
-              <div className="h-80 relative">
-                <Image 
-                  src="/images/hero.jpeg" 
-                  alt="Professional Scaffolding Solutions - Deckscaff Ghana Ltd"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-                {/* Overlay for better text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                
-                {/* Content overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                  <h3 className="text-2xl font-bold mb-3">Engineering Excellence</h3>
-                  <p className="text-white/90 mb-6">Certified scaffolding systems meeting international safety standards</p>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
-                      <div className="text-white font-bold text-lg">ISO 9001</div>
-                      <div className="text-white/80 text-sm">Certified</div>
-                    </div>
-                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
-                      <div className="text-white font-bold text-lg">OSHA</div>
-                      <div className="text-white/80 text-sm">Compliant</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl border border-white/20">
+              <Image 
+                src="/images/hero.jpeg" 
+                alt="Professional Scaffolding Solutions - Deckscaff Ghana Ltd"
+                fill
+                className="object-cover"
+                priority
+              />
             </div>
           </div>
         </div>

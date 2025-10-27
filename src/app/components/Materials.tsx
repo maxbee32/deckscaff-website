@@ -142,12 +142,42 @@ const materials: MaterialItem[] = [
   },
   {
     id: 9,
+    name: "Wall Formwork",
+    type: "rental",
+    category: "Formwork",
+    image: "/images/wall formwork.jpeg",
+    description: "Specialized formwork systems for vertical concrete walls and structures",
+    features: [
+      "Modular Design",
+      "Quick Assembly",
+      "High Pressure Resistance",
+      "Smooth Surface Finish",
+    ],
+    status: "available",
+  },
+  {
+    id: 10,
+    name: "Panels for Wall Formwork",
+    type: "rental",
+    category: "Formwork",
+    image: "/images/panel.jpeg",
+    description: "High-quality formwork panels for efficient wall construction and concrete forming",
+    features: [
+      "Multiple Sizes Available",
+      "Easy to Handle",
+      "Durable Construction",
+      "Quick Assembly & Disassembly",
+    ],
+    status: "available",
+  },
+  {
+    id: 11,
     name: "I-Beam",
     type: "sale",
     category: "Structural",
     image: "/images/H-Beam.jpg",
     description:
-      "Heavy-duty H-beams for major structural support and construction projects",
+      "Heavy-duty I-beams for major structural support and construction projects",
     features: [
       "High Load Bearing",
       "Versatile Applications",
@@ -157,7 +187,7 @@ const materials: MaterialItem[] = [
     status: "available",
   },
   {
-    id: 10,
+    id: 12,
     name: "Timber Formwork",
     type: "sale",
     category: "Formwork",
@@ -344,7 +374,7 @@ export default function Materials() {
 
   // Close dropdown when clicking outside
   const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
+    if (e.target === e.target) {
       setShowCallOptions(false);
       setShowContactModal(false);
     }
