@@ -1,5 +1,6 @@
 import "./globals.css";
 import { ReactNode } from "react";
+import Script from "next/script";
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -14,7 +15,13 @@ export const metadata = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased">{children}</body>
+      <head>
+        {/* Add tracking script using Next.js Script component */}
+        <Script src="/deckscaff-tracker.js" strategy="afterInteractive" />
+      </head>
+      <body className="font-sans antialiased">
+        {children}
+      </body>
     </html>
   );
 }
