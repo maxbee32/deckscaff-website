@@ -927,6 +927,29 @@ interface MaterialItem {
   image: string;
 }
 
+// Helper functions outside component
+const getMaterialImageUrl = (imagePath: string, apiBaseUrl: string): string => {
+  if (!imagePath) {
+    return getDefaultImageUrl();
+  }
+  
+  // If it's already a full URL, return it as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  
+  // Remove any leading slashes or prefixes
+  const cleanPath = imagePath.replace(/^\/+|^uploads\/+|^images\/+/gi, '');
+  
+  // Construct the full URL
+  return `${apiBaseUrl}/uploads/images/project/${cleanPath}`;
+};
+
+const getDefaultImageUrl = (): string => {
+  // Placeholder service
+  return "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80";
+};
+
 export default function Materials() {
   const [materials, setMaterials] = useState<MaterialItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -959,104 +982,51 @@ export default function Materials() {
 
   // Fetch materials from API
   useEffect(() => {
-    // In your useEffect
-const fetchMaterials = async () => {
-  try {
-    setLoading(true);
-    const response = await fetch(
-      `${API_BASE_URL}/api/auth/all-materials`
-    );
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch materials: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    const mappedMaterials = data.map((item: any) => ({
-      id: item.id,
-      name: item.name,
-      description: item.description,
-      specifications: item.specifications || [],
-      category: item.category,
-      quantity: item.quantity || item.availableQuantity || 0,
-      price: item.price || "Contact for quote",
-      unit: item.unit || "unit",
-      icon: item.icon,
-      color: item.color,
-      status: item.status || "IN_STOCK",
-      supplier: item.supplier,
-      location: item.location,
-      materialType: item.materialType || "FOR_SALE",
-      // IMPORTANT: Construct proper image URL
-      image: item.image 
-        ? getMaterialImageUrl(item.image)  // Use the helper function
-        : getDefaultImageUrl()              // Fallback to default
-    }));
-    
-    setMaterials(mappedMaterials);
-    setFetchError(null);
-  } catch (err) {
-    console.error("Error fetching materials:", err);
-    setFetchError("Failed to load materials. Please try again later.");
-  } finally {
-    setLoading(false);
-  }
-};
+    const fetchMaterials = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE_URL}/api/auth/all-materials`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch materials: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Map and construct proper image URLs
+        const mappedMaterials = data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          specifications: item.specifications || [],
+          category: item.category,
+          quantity: item.quantity || item.availableQuantity || 0,
+          price: item.price || "Contact for quote",
+          unit: item.unit || "unit",
+          icon: item.icon,
+          color: item.color,
+          status: item.status || "IN_STOCK",
+          supplier: item.supplier,
+          location: item.location,
+          materialType: item.materialType || "FOR_SALE",
+          // Construct proper image URL
+          image: item.image 
+            ? getMaterialImageUrl(item.image, API_BASE_URL)
+            : getDefaultImageUrl()
+        }));
+        
+        setMaterials(mappedMaterials);
+        setFetchError(null);
+      } catch (err) {
+        console.error("Error fetching materials:", err);
+        setFetchError("Failed to load materials. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchMaterials();
   }, [API_BASE_URL]);
-
-
-  // Helper function to construct image URL
-const getMaterialImageUrl = (imagePath: string): string => {
-  if (!imagePath) {
-    return getDefaultImageUrl();
-  }
-  
-  // Remove any leading slashes or "uploads/" prefixes if they exist
-  const cleanPath = imagePath.replace(/^\/+|^uploads\/+|^images\/+/gi, '');
-  
-  // Construct the full URL
-  return `${API_BASE_URL}/uploads/images/project/${cleanPath}`;
-};
-
-// Helper function for default/placeholder image
-const getDefaultImageUrl = (): string => {
-  // You can use a local placeholder or a service
-  // Option 1: Local placeholder (if you add the file)
-  // return "/images/default-material.jpg";
-  
-  // Option 2: Placeholder service
-  return "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80";
-  
-  // Option 3: SVG placeholder
-  // return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23f3f4f6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' fill='%236b7280'>Scaffolding Material</text></svg>";
-};
-
-// Optional: Check if image exists before displaying
-const ImageWithFallback = ({ src, alt, className }: { 
-  src: string; 
-  alt: string; 
-  className: string;
-}) => {
-  const [imgSrc, setImgSrc] = useState(src);
-  const [hasError, setHasError] = useState(false);
-  
-  return (
-    <img
-      src={imgSrc}
-      alt={alt}
-      className={className}
-      onError={() => {
-        if (!hasError) {
-          setImgSrc(getDefaultImageUrl());
-          setHasError(true);
-        }
-      }}
-    />
-  );
-};
 
   // Extract unique categories from materials
   const categories = [
@@ -1345,7 +1315,7 @@ const ImageWithFallback = ({ src, alt, className }: {
                     alt={material.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
-                      e.currentTarget.src = "/images/default-material.jpg";
+                      e.currentTarget.src = getDefaultImageUrl();
                     }}
                   />
                 </div>
@@ -1643,11 +1613,11 @@ const ImageWithFallback = ({ src, alt, className }: {
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-3">
                   <img
-                    src={selectedMaterial.image || "/images/default-material.jpg"}
+                    src={selectedMaterial.image}
                     alt={selectedMaterial.name}
                     className="w-12 h-12 object-cover rounded"
                     onError={(e) => {
-                      e.currentTarget.src = "/images/default-material.jpg";
+                      e.currentTarget.src = getDefaultImageUrl();
                     }}
                   />
                   <div>
