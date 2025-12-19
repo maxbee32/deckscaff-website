@@ -927,6 +927,26 @@ interface MaterialItem {
   image: string;
 }
 
+// Interface for the API response
+interface ApiMaterial {
+  id: number;
+  name: string;
+  description: string;
+  specifications: string[];
+  category: string;
+  quantity: number;
+  availableQuantity: number;
+  price: string;
+  unit: string;
+  icon: string;
+  color: string;
+  status: string;
+  supplier: string;
+  location: string;
+  materialType: string;
+  image: string;
+}
+
 // Helper functions outside component
 const getMaterialImageUrl = (imagePath: string, apiBaseUrl: string): string => {
   if (!imagePath) {
@@ -953,7 +973,7 @@ const getDefaultImageUrl = (): string => {
 export default function Materials() {
   const [materials, setMaterials] = useState<MaterialItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setFetchError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   
   const [activeFilter, setActiveFilter] = useState<"all" | "FOR_RENT" | "FOR_SALE">(
     "all"
@@ -991,10 +1011,10 @@ export default function Materials() {
           throw new Error(`Failed to fetch materials: ${response.status}`);
         }
         
-        const data = await response.json();
+        const data: ApiMaterial[] = await response.json();
         
         // Map and construct proper image URLs
-        const mappedMaterials = data.map((item: any) => ({
+        const mappedMaterials: MaterialItem[] = data.map((item) => ({
           id: item.id,
           name: item.name,
           description: item.description,
@@ -1200,7 +1220,7 @@ export default function Materials() {
   }
 
   // Error state
-  if (error) {
+  if (fetchError) {
     return (
       <section id="materials" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1209,7 +1229,7 @@ export default function Materials() {
               Scaffolding Materials
             </h2>
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-lg mx-auto">
-              <p className="text-red-600 font-semibold">{error}</p>
+              <p className="text-red-600 font-semibold">{fetchError}</p>
               <button
                 onClick={() => window.location.reload()}
                 className="mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors"
