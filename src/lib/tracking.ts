@@ -17,6 +17,7 @@ class DeckScaffTracker {
   private apiUrl: string;
 
   constructor(apiUrl: string = 'https://deckstaff-website-be.onrender.com/api/auth/track') {
+    
     this.apiUrl = apiUrl;
   }
 
