@@ -945,11 +945,16 @@ interface ApiMaterial {
   location: string;
   materialType: string;
   image: string;
+  currentlyRented: number;
+  createdAt: string;
+  updatedAt: string;
+  rentalDetails: any;
 }
 
 // Helper functions outside component
+// Updated version that encodes spaces
 const getMaterialImageUrl = (imagePath: string, apiBaseUrl: string): string => {
-  if (!imagePath) {
+  if (!imagePath || imagePath.trim() === "") {
     return getDefaultImageUrl();
   }
   
@@ -958,15 +963,20 @@ const getMaterialImageUrl = (imagePath: string, apiBaseUrl: string): string => {
     return imagePath;
   }
   
-  // Remove any leading slashes or prefixes
-  const cleanPath = imagePath.replace(/^\/+|^uploads\/+|^images\/+/gi, '');
+  // If it starts with /, it's a relative path from the backend
+  if (imagePath.startsWith('/')) {
+    // Encode the path to handle spaces
+    const encodedPath = encodeURI(imagePath);
+    return `${apiBaseUrl}${encodedPath}`;
+  }
   
-  // Construct the full URL
-  return `${apiBaseUrl}/uploads/images/project/${cleanPath}`;
+  // If it doesn't start with /, prepend /images/ as default
+  const encodedPath = encodeURI(imagePath);
+  return `${apiBaseUrl}/images/${encodedPath}`;
 };
 
 const getDefaultImageUrl = (): string => {
-  // Placeholder service
+  // Placeholder service - scaffolding related image
   return "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80";
 };
 
@@ -1012,28 +1022,32 @@ export default function Materials() {
         }
         
         const data: ApiMaterial[] = await response.json();
+        console.log("Fetched materials:", data); // Debug log
         
         // Map and construct proper image URLs
-        const mappedMaterials: MaterialItem[] = data.map((item) => ({
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          specifications: item.specifications || [],
-          category: item.category,
-          quantity: item.quantity || item.availableQuantity || 0,
-          price: item.price || "Contact for quote",
-          unit: item.unit || "unit",
-          icon: item.icon,
-          color: item.color,
-          status: item.status || "IN_STOCK",
-          supplier: item.supplier,
-          location: item.location,
-          materialType: item.materialType || "FOR_SALE",
-          // Construct proper image URL
-          image: item.image 
-            ? getMaterialImageUrl(item.image, API_BASE_URL)
-            : getDefaultImageUrl()
-        }));
+        const mappedMaterials: MaterialItem[] = data.map((item) => {
+          const imageUrl = getMaterialImageUrl(item.image, API_BASE_URL);
+          console.log(`Image for ${item.name}:`, { original: item.image, constructed: imageUrl }); // Debug log
+          
+          return {
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            specifications: item.specifications || [],
+            category: item.category,
+            quantity: item.availableQuantity || item.quantity || 0,
+            price: item.price || "Contact for quote",
+            unit: item.unit || "unit",
+            icon: item.icon,
+            color: item.color,
+            status: item.status || "IN_STOCK",
+            supplier: item.supplier,
+            location: item.location,
+            materialType: item.materialType || "FOR_SALE",
+            // Construct proper image URL
+            image: imageUrl
+          };
+        });
         
         setMaterials(mappedMaterials);
         setFetchError(null);
