@@ -1,10 +1,12 @@
-// DeckScaff Website Tracker - Client Version
 (function() {
     'use strict';
 
     class DeckScaffTracker {
         constructor(apiUrl) {
+            // Fixed: Added double slash after http
             this.apiUrl = apiUrl || 'https://deckstaff-website-be.onrender.com/api/auth/track';
+            // Or use the deployed backend:
+            // this.apiUrl = apiUrl || 'https://deckstaff-website-be.onrender.com/api/auth/track';
         }
 
         async trackVisit() {
@@ -19,7 +21,13 @@
                     screenResolution: screen.width + 'x' + screen.height
                 };
 
-                await fetch(this.apiUrl, {
+                // Ensure URL is properly formatted
+                let apiUrl = this.apiUrl;
+                if (!apiUrl.startsWith('http')) {
+                    apiUrl = 'http://' + apiUrl;
+                }
+
+                await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json' 
@@ -27,10 +35,10 @@
                     body: JSON.stringify(visitorData)
                 });
 
-                console.log(' DECKSCAFF: Visitor tracked successfully');
+                console.log('DECKSCAFF: Visitor tracked successfully');
 
             } catch (error) {
-                console.error(' DECKSCAFF: Error tracking visitor:', error);
+                console.error('DECKSCAFF: Error tracking visitor:', error);
             }
         }
 
@@ -46,5 +54,5 @@
     // Make available globally for custom tracking
     window.DeckScaffTracker = DeckScaffTracker;
 
-    console.log(' DECKSCAFF: Analytics tracker loaded');
+    console.log('DECKSCAFF: Analytics tracker loaded');
 })();

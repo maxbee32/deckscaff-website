@@ -921,7 +921,7 @@ interface MaterialItem {
   icon: string;
   color: string;
   status: string;
-  supplier: string;
+  // supplier: string;
   location: string;
   materialType: string; // "FOR_SALE" | "FOR_RENT"
   image: string;
@@ -941,14 +941,14 @@ interface ApiMaterial {
   icon: string;
   color: string;
   status: string;
-  supplier: string;
+  // supplier: string;
   location: string;
   materialType: string;
   image: string;
   currentlyRented: number;
   createdAt: string;
   updatedAt: string;
-  rentalDetails: any;
+  rentalDetails: RentalDetails | null;
 }
 
 // Helper functions outside component
@@ -998,6 +998,10 @@ export default function Materials() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formError, setFormError] = useState("");
 
+  // New states for Details modal
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedDetailsMaterial, setSelectedDetailsMaterial] = useState<MaterialItem | null>(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -1041,7 +1045,7 @@ export default function Materials() {
             icon: item.icon,
             color: item.color,
             status: item.status || "IN_STOCK",
-            supplier: item.supplier,
+            // supplier: item.supplier,
             location: item.location,
             materialType: item.materialType || "FOR_SALE",
             // Construct proper image URL
@@ -1099,6 +1103,17 @@ export default function Materials() {
 
   const getStatusText = (status: string) => {
     return getStatusInfo(status).text;
+  };
+
+  // Handler functions for Details modal
+  const handleDetailsClick = (material: MaterialItem) => {
+    setSelectedDetailsMaterial(material);
+    setShowDetailsModal(true);
+  };
+
+  const closeDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedDetailsMaterial(null);
   };
 
   const handleCallClick = () => {
@@ -1446,6 +1461,7 @@ export default function Materials() {
                       : "Get Quote"}
                   </button>
                   <button 
+                    onClick={() => handleDetailsClick(material)}
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-300 text-sm"
                   >
                     Details
@@ -1553,7 +1569,7 @@ export default function Materials() {
       {/* Contact Form Modal */}
       {showContactModal && selectedMaterial && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black bg-opacity-50"
           onClick={handleBackdropClick}
         >
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
@@ -1827,6 +1843,125 @@ export default function Materials() {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Details Modal */}
+      {showDetailsModal && selectedDetailsMaterial && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-50" onClick={closeDetailsModal}>
+          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-2xl font-bold text-gray-900">Material Details</h3>
+                <button
+                  onClick={closeDetailsModal}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Material Image */}
+              <div className="mb-6">
+                <div className="h-64 bg-gray-100 rounded-lg overflow-hidden">
+                  <img
+                    src={selectedDetailsMaterial.image}
+                    alt={selectedDetailsMaterial.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = getDefaultImageUrl();
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Material Info */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xl font-bold text-gray-900">{selectedDetailsMaterial.name}</h4>
+                    <p className="text-gray-600">{selectedDetailsMaterial.category}</p>
+                  </div>
+                  <div className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    selectedDetailsMaterial.materialType === "FOR_RENT" ? "bg-blue-500 text-white" : "bg-green-500 text-white"
+                  }`}>
+                    {selectedDetailsMaterial.materialType === "FOR_RENT" ? "FOR RENT" : "FOR SALE"}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-1">
+                    <p className="text-gray-500">Status</p>
+                    <span className={`inline-flex items-center gap-1 font-semibold ${getStatusColor(selectedDetailsMaterial.status).replace('bg-', 'text-')}`}>
+                      <span className={`w-2 h-2 rounded-full ${getStatusColor(selectedDetailsMaterial.status)}`}></span>
+                      {getStatusText(selectedDetailsMaterial.status)}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-gray-500">Available Quantity</p>
+                    <p className="font-semibold">{selectedDetailsMaterial.quantity} units</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-gray-500">Price</p>
+                    <p className="font-semibold text-green-600">
+                      {selectedDetailsMaterial.price} {selectedDetailsMaterial.unit && `per ${selectedDetailsMaterial.unit}`}
+                    </p>
+                  </div>
+                  {/* <div className="space-y-1">
+                    <p className="text-gray-500">Supplier</p>
+                    <p className="font-semibold">{selectedDetailsMaterial.supplier || "Not specified"}</p>
+                  </div> */}
+                </div>
+
+                <div>
+                  <p className="text-gray-500 mb-2">Description</p>
+                  <p className="text-gray-700">{selectedDetailsMaterial.description}</p>
+                </div>
+
+                {selectedDetailsMaterial.specifications && selectedDetailsMaterial.specifications.length > 0 && (
+                  <div>
+                    <p className="text-gray-500 mb-2">Specifications</p>
+                    <ul className="space-y-1">
+                      {selectedDetailsMaterial.specifications.map((spec, index) => (
+                        <li key={index} className="flex items-start text-sm text-gray-700">
+                          <svg className="w-4 h-4 text-orange-500 mr-2 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                          {spec}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="pt-4 border-t">
+                  <p className="text-gray-500 mb-2">Location</p>
+                  <p className="font-semibold">{selectedDetailsMaterial.location || "Not specified"}</p>
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    onClick={() => {
+                      closeDetailsModal();
+                      handleQuoteRequest(selectedDetailsMaterial);
+                    }}
+                    disabled={selectedDetailsMaterial.status === "OUT_OF_STOCK" || selectedDetailsMaterial.status === "DISCONTINUED"}
+                    className={`w-full py-3 rounded-lg font-semibold transition-colors duration-300 ${
+                      selectedDetailsMaterial.status === "OUT_OF_STOCK" || selectedDetailsMaterial.status === "DISCONTINUED"
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-orange-500 text-white hover:bg-orange-600"
+                    }`}
+                  >
+                    {selectedDetailsMaterial.materialType === "FOR_RENT"
+                      ? "Request Rental"
+                      : "Get Quote"}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
