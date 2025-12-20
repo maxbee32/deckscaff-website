@@ -948,7 +948,6 @@ interface ApiMaterial {
   currentlyRented: number;
   createdAt: string;
   updatedAt: string;
-  rentalDetails: RentalDetails | null;
 }
 
 // Helper functions outside component
