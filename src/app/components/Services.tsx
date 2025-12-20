@@ -85,7 +85,6 @@
 // }
 "use client";
 import { useState, useEffect } from "react";
-import Image from 'next/image';
 
 interface Service {
   id: string;
@@ -99,6 +98,22 @@ interface Service {
   icon?: string;
   color?: string;
   status?: "ACTIVE" | "INACTIVE" | "COMING_SOON" | "MAINTENANCE";
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Interface for API response
+interface ApiService {
+  id?: number | string;
+  title?: string;
+  description?: string;
+  image?: string;
+  features?: string[] | string;
+  category?: string;
+  duration?: string;
+  price?: string;
+  icon?: string;
+  status?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -123,33 +138,23 @@ const defaultServiceImages = [
 
 // Helper function to get image URL
 const getServiceImageUrl = (imagePath: string | null | undefined, apiBaseUrl: string, index: number): string => {
-  // If no image path, use a default placeholder
   if (!imagePath || imagePath.trim() === "" || imagePath === "null" || imagePath === "undefined") {
     return defaultServiceImages[index % defaultServiceImages.length];
   }
   
-  // If it's already a full URL, return it as is
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
     return imagePath;
   }
   
-  // Try different patterns for backend images
   let finalPath = imagePath;
   
-  // If it starts with /uploads/, use it as is
   if (imagePath.startsWith('/uploads/')) {
     finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // If it starts with /images/, use it as is
-  else if (imagePath.startsWith('/images/')) {
+  } else if (imagePath.startsWith('/images/')) {
     finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // If it starts with /, use it as is
-  else if (imagePath.startsWith('/')) {
+  } else if (imagePath.startsWith('/')) {
     finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // Otherwise, assume it's in /images/services/
-  else {
+  } else {
     finalPath = `${apiBaseUrl}/images/services/${imagePath}`;
   }
   
@@ -163,7 +168,6 @@ export default function Services() {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   
-  // API base URL from environment variable
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://deckstaff-website-be.onrender.com";
 
   // Fetch services from API
@@ -180,22 +184,26 @@ export default function Services() {
         });
         
         if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Failed to fetch services: ${response.status}`);
+          throw new Error(`Failed to fetch services: ${response.status} ${response.statusText}`);
         }
         
         const data = await response.json();
         
         // Map backend data to frontend Service interface
         const servicesWithFeatures = Array.isArray(data)
-          ? data.map((service: any, index: number) => {
-              // Handle status - be more flexible
+          ? data.map((service: ApiService, index: number) => {
+              // Handle status with proper type checking
               let status: "ACTIVE" | "INACTIVE" | "COMING_SOON" | "MAINTENANCE" = "ACTIVE";
               if (service.status) {
-                const statusStr = String(service.status).toUpperCase();
-                if (statusStr === "ACTIVE" || statusStr === "INACTIVE" || 
-                    statusStr === "COMING_SOON" || statusStr === "MAINTENANCE") {
-                  status = statusStr as any;
+                const statusStr = service.status.toUpperCase();
+                if (statusStr === "ACTIVE") {
+                  status = "ACTIVE";
+                } else if (statusStr === "INACTIVE") {
+                  status = "INACTIVE";
+                } else if (statusStr === "COMING_SOON") {
+                  status = "COMING_SOON";
+                } else if (statusStr === "MAINTENANCE") {
+                  status = "MAINTENANCE";
                 }
               }
               
@@ -207,7 +215,6 @@ export default function Services() {
               if (Array.isArray(service.features)) {
                 features = service.features;
               } else if (service.features && typeof service.features === 'string') {
-                // Try to parse as JSON or split by commas
                 try {
                   features = JSON.parse(service.features);
                 } catch {
@@ -235,9 +242,12 @@ export default function Services() {
 
         setServices(servicesWithFeatures);
         setError(null);
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : 'An unknown error occurred';
         console.error("Error fetching services:", err);
-        setError(`Failed to load services. Please try again later.`);
+        setError(`Failed to load services. ${errorMessage}`);
       } finally {
         setLoading(false);
       }
@@ -348,10 +358,8 @@ export default function Services() {
                         <span className="text-gray-400 text-sm">No image available</span>
                       </div>
                     )}
-                    {/* Overlay */}
                     <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300"></div>
                     
-                    {/* Status Badge - Show for all statuses including ACTIVE */}
                     {service.status && (
                       <div className="absolute top-3 right-3">
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -372,7 +380,6 @@ export default function Services() {
                     )}
                   </div>
 
-                  {/* Content */}
                   <div className="p-6 flex-grow flex flex-col">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
@@ -385,7 +392,6 @@ export default function Services() {
                     
                     <p className="text-gray-600 mb-4 line-clamp-3 flex-grow">{service.description}</p>
                     
-                    {/* Additional Info */}
                     {(service.duration || service.price) && (
                       <div className="flex flex-col gap-2 text-sm mb-4">
                         {service.duration && (
@@ -401,7 +407,6 @@ export default function Services() {
                       </div>
                     )}
                     
-                    {/* Features Preview */}
                     {service.features && service.features.length > 0 && (
                       <ul className="space-y-2 mb-4">
                         {service.features.slice(0, 3).map((feature, featureIndex) => (
@@ -418,7 +423,6 @@ export default function Services() {
                       </ul>
                     )}
                     
-                    {/* View Details Button */}
                     <button 
                       className="mt-auto w-full text-center bg-orange-50 text-orange-600 hover:bg-orange-100 font-medium text-sm transition-colors duration-300 py-3 rounded-lg"
                       onClick={() => handleServiceClick(service)}
@@ -433,7 +437,6 @@ export default function Services() {
         )}
       </div>
 
-      {/* Service Details Modal */}
       {showDetailsModal && selectedService && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-50" onClick={closeDetailsModal}>
           <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -450,7 +453,6 @@ export default function Services() {
                 </button>
               </div>
 
-              {/* Service Image */}
               <div className="mb-6">
                 <div className="h-64 bg-gray-100 rounded-lg overflow-hidden">
                   <img
@@ -464,15 +466,12 @@ export default function Services() {
                 </div>
               </div>
 
-              {/* Service Details */}
               <div className="space-y-6">
-                {/* Service Name */}
                 <div>
                   <h4 className="text-2xl font-bold text-gray-900 mb-2">{selectedService.title}</h4>
                   <p className="text-gray-600 text-lg">{selectedService.description}</p>
                 </div>
 
-                {/* Service Information Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
                   <div className="space-y-2">
                     <div>
@@ -520,7 +519,6 @@ export default function Services() {
                   </div>
                 </div>
 
-                {/* Features */}
                 {selectedService.features && selectedService.features.length > 0 && (
                   <div>
                     <h5 className="text-lg font-bold text-gray-900 mb-4">Features</h5>
@@ -537,7 +535,6 @@ export default function Services() {
                   </div>
                 )}
 
-                {/* CTA Button */}
                 <div className="pt-4">
                   <a
                     href="#contact"

@@ -275,48 +275,57 @@ const availableColors = [
 
 // Default project images from Unsplash (scaffolding/construction themed)
 const defaultProjectImages = [
-  "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", // Scaffolding
-  "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", // Construction
-  "https://images.unsplash.com/photo-1503387769-00a112127ca0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", // Building
-  "https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", // Industrial
-  "https://images.unsplash.com/photo-1508599589920-14cfa1c1fe4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", // Architecture
-  "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", // Engineering
+  "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1503387769-00a112127ca0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1508599589920-14cfa1c1fe4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
 ];
 
 // Helper function to get image URL
 const getProjectImageUrl = (imagePath: string | null | undefined, apiBaseUrl: string, index: number): string => {
   if (!imagePath || imagePath.trim() === "" || imagePath === "null" || imagePath === "undefined") {
-    // Use a default image from Unsplash with rotation
     return defaultProjectImages[index % defaultProjectImages.length];
   }
   
-  // If it's already a full URL, return it as is
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
     return imagePath;
   }
   
-  // Try different patterns for backend images
   let finalPath = imagePath;
   
-  // If it starts with /uploads/, use it as is
-  if (imagePath.startsWith('/uploads/')) {
+  if (imagePath.startsWith('/uploads/') || imagePath.startsWith('/images/') || imagePath.startsWith('/')) {
     finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // If it starts with /images/, use it as is
-  else if (imagePath.startsWith('/images/')) {
-    finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // If it starts with /, use it as is
-  else if (imagePath.startsWith('/')) {
-    finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // Otherwise, assume it's in /images/projects/
-  else {
+  } else {
     finalPath = `${apiBaseUrl}/images/projects/${imagePath}`;
   }
   
   return encodeURI(finalPath);
 };
+
+// Interface for API response project
+interface ApiProject {
+  id?: number | string;
+  title?: string;
+  description?: string;
+  location?: string;
+  duration?: string;
+  services?: string[] | string;
+  image?: string;
+  images?: string[];
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  scopeOfWork?: string;
+  projectScope?: string;
+  challenges?: string[] | string;
+  solutions?: string[] | string;
+  materialsUsed?: string[] | string;
+  teamSize?: number;
+}
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -336,7 +345,6 @@ export default function Projects() {
       try {
         setLoading(true);
         
-        // Fetch projects from endpoint
         const response = await fetch(`${API_BASE_URL}/api/auth/all-project`);
         
         if (!response.ok) {
@@ -347,7 +355,7 @@ export default function Projects() {
         
         // Map backend data to frontend Project interface
         const projectsData = Array.isArray(data)
-          ? data.map((project: any, index: number) => {
+          ? data.map((project: ApiProject, index: number) => {
               // Process images - only use images from the API
               const images = Array.isArray(project.images) 
                 ? project.images.map((imgUrl: string, imgIndex: number) => ({
@@ -376,7 +384,7 @@ export default function Projects() {
               // Process additional fields
               let scopeOfWork = "";
               if (project.scopeOfWork || project.projectScope) {
-                scopeOfWork = project.scopeOfWork || project.projectScope;
+                scopeOfWork = project.scopeOfWork || project.projectScope || "";
               }
               
               let challenges: string[] = [];
@@ -437,9 +445,12 @@ export default function Projects() {
 
         setProjects(projectsData);
         setError(null);
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : 'An unknown error occurred';
         console.error("Error fetching projects:", err);
-        setError(`Failed to load projects. Please try again later.`);
+        setError(`Failed to load projects. ${errorMessage}`);
       } finally {
         setLoading(false);
       }

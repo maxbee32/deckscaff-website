@@ -113,7 +113,6 @@
 //     </section>
 //   );
 // }
-
 "use client";
 import { useState, useEffect } from 'react';
 
@@ -141,35 +140,50 @@ interface Testimonial {
   createdAt?: string;
 }
 
+// Interface for API response
+interface ApiTestimonial {
+  id?: number | string;
+  clientName?: string;
+  clientPosition?: string;
+  clientCompany?: string;
+  clientImage?: string;
+  project?: string;
+  projectValue?: number;
+  projectDuration?: string;
+  location?: string;
+  completionDate?: string;
+  rating?: number;
+  testimonial?: string;
+  category?: string;
+  status?: string;
+  challenges?: string[] | string;
+  solutions?: string[] | string;
+  results?: string[] | string;
+  media?: string[] | string;
+  featured?: boolean;
+  approved?: boolean;
+  createdAt?: string;
+}
+
 // Helper function to get image URL
 const getClientImageUrl = (imagePath: string | null | undefined, apiBaseUrl: string): string => {
   if (!imagePath || imagePath.trim() === "" || imagePath === "null" || imagePath === "undefined") {
-    // Default avatar image
     return "/images/testimonials/default-avatar.jpg";
   }
   
-  // If it's already a full URL, return it as is
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
     return imagePath;
   }
   
-  // Try different patterns for backend images
   let finalPath = imagePath;
   
-  // If it starts with /uploads/, use it as is
   if (imagePath.startsWith('/uploads/')) {
     finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // If it starts with /images/, use it as is
-  else if (imagePath.startsWith('/images/')) {
+  } else if (imagePath.startsWith('/images/')) {
     finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // If it starts with /, use it as is
-  else if (imagePath.startsWith('/')) {
+  } else if (imagePath.startsWith('/')) {
     finalPath = `${apiBaseUrl}${imagePath}`;
-  }
-  // Otherwise, assume it's in /images/testimonials/
-  else {
+  } else {
     finalPath = `${apiBaseUrl}/images/testimonials/${imagePath}`;
   }
   
@@ -212,12 +226,25 @@ export default function Testimonials() {
         }
         
         const data = await response.json();
-        console.log("Fetched testimonials data:", data);
-        console.log("Number of testimonials:", Array.isArray(data) ? data.length : 0);
+        
+        // Helper function to parse array fields
+        const parseArrayField = (field: string[] | string | undefined): string[] => {
+          if (Array.isArray(field)) {
+            return field;
+          } else if (field && typeof field === 'string') {
+            try {
+              const parsed = JSON.parse(field);
+              return Array.isArray(parsed) ? parsed : [parsed];
+            } catch {
+              return field.split(',').map((item: string) => item.trim());
+            }
+          }
+          return [];
+        };
         
         // Map backend data to frontend Testimonial interface
         const testimonialsData = Array.isArray(data)
-          ? data.map((testimonial: any, index: number) => {
+          ? data.map((testimonial: ApiTestimonial, index: number) => {
               // Get client image URL
               const clientImageUrl = getClientImageUrl(testimonial.clientImage, API_BASE_URL);
               
@@ -236,25 +263,26 @@ export default function Testimonials() {
                 testimonial: testimonial.testimonial || "No testimonial content available",
                 category: testimonial.category || "COMMERCIAL",
                 status: testimonial.status || "COMPLETED",
-                challenges: Array.isArray(testimonial.challenges) ? testimonial.challenges : [],
-                solutions: Array.isArray(testimonial.solutions) ? testimonial.solutions : [],
-                results: Array.isArray(testimonial.results) ? testimonial.results : [],
-                media: Array.isArray(testimonial.media) ? testimonial.media : [],
+                challenges: parseArrayField(testimonial.challenges),
+                solutions: parseArrayField(testimonial.solutions),
+                results: parseArrayField(testimonial.results),
+                media: parseArrayField(testimonial.media),
                 featured: testimonial.featured || false,
                 approved: testimonial.approved || true,
                 createdAt: testimonial.createdAt || new Date().toISOString(),
               };
             })
-              // Sort by rating (highest first)
-              .sort((a: Testimonial, b: Testimonial) => b.rating - a.rating)
+            .sort((a: Testimonial, b: Testimonial) => b.rating - a.rating)
           : [];
 
-        console.log("Mapped testimonials:", testimonialsData);
         setTestimonials(testimonialsData);
         setError(null);
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : 'An unknown error occurred';
         console.error("Error fetching testimonials:", err);
-        setError(`Failed to load testimonials. Please try again later.`);
+        setError(`Failed to load testimonials. ${errorMessage}`);
       } finally {
         setLoading(false);
       }
@@ -360,7 +388,6 @@ export default function Testimonials() {
             clients have to say about working with us.
           </p>
           
-          {/* Show count of testimonials */}
           {testimonials.length > 0 && (
             <div className="mt-4 inline-flex items-center gap-2 bg-gray-800 text-gray-300 px-4 py-1 rounded-full text-sm">
               <span className="font-semibold text-orange-400">{testimonials.length}</span> client testimonials
@@ -392,7 +419,6 @@ export default function Testimonials() {
                   className="bg-gray-800 rounded-2xl p-6 hover:bg-gray-750 transition-all duration-300 group hover:transform hover:-translate-y-1 cursor-pointer"
                   onClick={() => openTestimonialDetails(testimonial)}
                 >
-                  {/* Rating Stars */}
                   <div className="flex items-center mb-4">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
@@ -411,18 +437,15 @@ export default function Testimonials() {
                     </span>
                   </div>
 
-                  {/* Testimonial excerpt */}
                   <p className="text-gray-300 mb-6 italic line-clamp-4">
                     &quot;{testimonial.testimonial}&quot;
                   </p>
 
-                  {/* Client info */}
                   <div className="border-t border-gray-700 pt-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="font-semibold text-white">
                         {testimonial.clientName}
                       </div>
-                      {/* Category badge */}
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getCategoryColor(testimonial.category)}`}>
                         {getCategoryText(testimonial.category)}
                       </span>
@@ -438,7 +461,6 @@ export default function Testimonials() {
                       </div>
                     )}
                     
-                    {/* Project info */}
                     <div className="mt-3 text-gray-400 text-sm">
                       <div className="font-medium text-white mb-1">
                         {testimonial.project}
@@ -458,7 +480,6 @@ export default function Testimonials() {
                       </div>
                     </div>
                     
-                    {/* Read more link */}
                     <div className="mt-4 text-xs text-orange-400 group-hover:text-orange-300 transition-colors flex items-center justify-between">
                       <span>Read full testimonial</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -470,13 +491,11 @@ export default function Testimonials() {
               ))}
             </div>
 
-            {/* Show more button if there are more testimonials */}
             {testimonials.length > 6 && (
               <div className="text-center mt-12">
                 <button 
                   className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-300"
                   onClick={() => {
-                    // Show all testimonials
                     console.log("View all testimonials");
                   }}
                 >
@@ -485,7 +504,6 @@ export default function Testimonials() {
               </div>
             )}
 
-            {/* Trust Indicators */}
             <div className="mt-16 text-center">
               <div className="inline-flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-gray-400">
                 <div className="flex items-center space-x-2">
@@ -512,12 +530,10 @@ export default function Testimonials() {
         )}
       </div>
 
-      {/* Testimonial Details Modal */}
       {showDetailsModal && selectedTestimonial && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/90" onClick={closeDetailsModal}>
           <div className="relative max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="bg-gray-800 rounded-xl overflow-hidden">
-              {/* Close button */}
               <button
                 onClick={closeDetailsModal}
                 className="absolute top-4 right-4 z-10 text-white hover:text-orange-400 transition-colors bg-black/50 rounded-full p-2"
@@ -527,7 +543,6 @@ export default function Testimonials() {
                 </svg>
               </button>
 
-              {/* Header */}
               <div className="p-6 border-b border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-2xl font-bold text-white">Client Testimonial</h3>
@@ -536,7 +551,6 @@ export default function Testimonials() {
                   </span>
                 </div>
                 
-                {/* Rating */}
                 <div className="flex items-center">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
@@ -554,9 +568,7 @@ export default function Testimonials() {
                 </div>
               </div>
 
-              {/* Content */}
               <div className="p-6">
-                {/* Client info */}
                 <div className="mb-6">
                   <h4 className="text-lg font-bold text-white mb-3">About the Client</h4>
                   <div className="bg-gray-900 rounded-lg p-4">
@@ -568,7 +580,6 @@ export default function Testimonials() {
                   </div>
                 </div>
 
-                {/* Project info */}
                 <div className="mb-6">
                   <h4 className="text-lg font-bold text-white mb-3">Project Details</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -591,7 +602,6 @@ export default function Testimonials() {
                   </div>
                 </div>
 
-                {/* Full testimonial */}
                 <div className="mb-6">
                   <h4 className="text-lg font-bold text-white mb-3">Client Feedback</h4>
                   <div className="bg-gray-900 rounded-lg p-5 border-l-4 border-orange-500">
@@ -601,7 +611,6 @@ export default function Testimonials() {
                   </div>
                 </div>
 
-                {/* Additional details */}
                 {(selectedTestimonial.challenges.length > 0 || 
                   selectedTestimonial.solutions.length > 0 || 
                   selectedTestimonial.results.length > 0) && (
@@ -662,7 +671,6 @@ export default function Testimonials() {
                   </div>
                 )}
 
-                {/* CTA */}
                 <div className="pt-6 border-t border-gray-700">
                   <a
                     href="#contact"
