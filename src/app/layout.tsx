@@ -7,7 +7,7 @@ interface RootLayoutProps {
 }
 
 export const metadata = {
-  title: "Deckscaff Ghana Ltd - Premium Scaffolding Solutions",
+  title: "Deckscaff Ghana Ltd - Premium Scaffolding and Formwork Solutions",
   description:
     "Professional scaffolding services, equipment rental, and custom engineering solutions for construction, industrial maintenance, and infrastructure projects across Ghana.",
 };
