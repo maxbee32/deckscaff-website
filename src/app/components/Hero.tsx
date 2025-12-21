@@ -25,12 +25,12 @@ export default function Hero() {
 
             <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">
               Premium
-              <span className="text-orange-400 block">Scaffolding</span>
+              <span className="text-orange-400 block">Scaffolding & Formwork</span>
               Solutions
             </h1>
 
             <p className="text-xl text-white/80 leading-relaxed max-w-2xl">
-              Deckscaff Ghana Ltd delivers professional scaffolding services, equipment rental, and custom engineering solutions for construction, industrial maintenance, and infrastructure projects across Ghana.
+              Deckscaff Ghana Ltd delivers professional scaffolding and formwork services, equipment rental, and custom engineering solutions for construction, industrial maintenance, and infrastructure projects across Ghana.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
@@ -83,7 +83,7 @@ export default function Hero() {
             <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl border border-white/20">
               <Image 
                 src="/images/hero.jpeg" 
-                alt="Professional Scaffolding Solutions - Deckscaff Ghana Ltd"
+                alt="Professional Scaffolding and Formwork Solutions - Deckscaff Ghana Ltd"
                 fill
                 className="object-cover"
                 priority
