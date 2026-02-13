@@ -281,7 +281,7 @@ export default function Testimonials() {
         const errorMessage = err instanceof Error 
           ? err.message 
           : 'An unknown error occurred';
-        console.error("Error fetching testimonials:", err);
+        // console.error("Error fetching testimonials:", err);
         setError(`Failed to load testimonials. ${errorMessage}`);
       } finally {
         setLoading(false);

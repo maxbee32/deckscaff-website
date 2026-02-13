@@ -44,7 +44,7 @@ class DeckScaffTracker {
       });
 
     } catch (error) {
-      console.error('Error tracking visitor:', error);
+      // console.error('Error tracking visitor:', error);
     }
   }
 

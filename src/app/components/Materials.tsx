@@ -1025,12 +1025,12 @@ export default function Materials() {
         }
         
         const data: ApiMaterial[] = await response.json();
-        console.log("Fetched materials:", data); // Debug log
+        // console.log("Fetched materials:", data); // Debug log
         
         // Map and construct proper image URLs
         const mappedMaterials: MaterialItem[] = data.map((item) => {
           const imageUrl = getMaterialImageUrl(item.image, API_BASE_URL);
-          console.log(`Image for ${item.name}:`, { original: item.image, constructed: imageUrl }); // Debug log
+          // console.log(`Image for ${item.name}:`, { original: item.image, constructed: imageUrl }); // Debug log
           
           return {
             id: item.id,
@@ -1055,7 +1055,7 @@ export default function Materials() {
         setMaterials(mappedMaterials);
         setFetchError(null);
       } catch (err) {
-        console.error("Error fetching materials:", err);
+        // console.error("Error fetching materials:", err);
         setFetchError("Failed to load materials. Please try again later.");
       } finally {
         setLoading(false);
@@ -1212,7 +1212,7 @@ export default function Materials() {
         throw new Error("Failed to send email");
       }
     } catch (err) {
-      console.error("Email sending error:", err);
+      // console.error("Email sending error:", err);
       setFormError(
         "There was an error sending your request. Please try again or contact us directly at deckscaffgh@outlook.com"
       );
@@ -1471,98 +1471,80 @@ export default function Materials() {
           ))}
         </div>
 
-        {/* CTA Section */}
-        <div className="mt-16 text-center">
-          <div className="bg-white rounded-2xl p-8 shadow-lg relative">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Can&apos;t Find What You Need?
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              We source and supply custom scaffolding solutions. Contact us for
-              specialized equipment or bulk orders.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="#contact"
-                className="bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-300"
-              >
-                Request Custom Quote
-              </a>
-
-              {/* Teams Call Button with Options */}
-              <div className="relative">
-                <button
-                  onClick={handleCallClick}
-                  className="border border-orange-500 text-orange-500 px-8 py-3 rounded-lg font-semibold hover:bg-orange-50 transition-colors duration-300 w-full sm:w-auto flex items-center justify-center gap-2"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-1 16.057V7.943c0-.742.484-1.348 1.2-1.348.715 0 1.2.606 1.2 1.348v8.114c0 .742-.485 1.348-1.2 1.348-.716 0-1.2-.606-1.2-1.348z" />
-                  </svg>
-                  Call via Teams
-                </button>
-
-                {/* Call Options Dropdown */}
-                {showCallOptions && (
-                  <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-                    onClick={handleBackdropClick}
-                  >
-                    <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 p-6">
-                      <h4 className="font-bold text-gray-900 mb-4 text-lg text-center">
-                        Choose Call Method
-                      </h4>
-                      <div className="space-y-3 mb-4">
-                        <a
-                          href="https://teams.live.com/meet/9349626922813?p=wvBRx3ZSN9A4iz925h"
-                          className="flex items-center gap-3 w-full text-left px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 font-semibold"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setShowCallOptions(false)}
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13.5v-7a.5.5 0 01.8-.4l4.67 3.5c.27.2.27.6 0 .8l-4.67 3.5a.5.5 0 01-.8-.4z" />
-                          </svg>
-                          Join Teams Meeting (Web)
-                        </a>
-
-                        <a
-                          href="https://teams.microsoft.com/l/chat/0/0?users=deckscaffgh@outlook.com"
-                          className="flex items-center gap-3 w-full text-left px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setShowCallOptions(false)}
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
-                          </svg>
-                          Start Teams Chat
-                        </a>
-                      </div>
-                      <button
-                        onClick={() => setShowCallOptions(false)}
-                        className="w-full px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-300 font-semibold border border-gray-300"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+        {/* Custom Solutions Section */}
+<div className="mt-16 text-center">
+  <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 shadow-lg relative overflow-hidden">
+    {/* Decorative elements */}
+    <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500 rounded-full filter blur-3xl opacity-10"></div>
+    <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 rounded-full filter blur-3xl opacity-10"></div>
+    
+    <div className="relative z-10">
+      {/* Icon */}
+      <div className="flex justify-center mb-4">
+        <div className="bg-orange-500/20 p-3 rounded-full">
+          <svg className="w-12 h-12 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        </div>
+      </div>
+      
+      <h3 className="text-3xl font-bold text-white mb-4">
+        Need Custom Scaffolding Solutions?
+      </h3>
+      
+      <p className="text-gray-300 mb-8 max-w-2xl mx-auto text-lg">
+        We specialize in custom-engineered scaffolding systems for unique project requirements. 
+        Our team works with you to design, supply, and install tailored solutions.
+      </p>
+      
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="#contact"
+          className="bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-orange-500/30 flex items-center justify-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Request Custom Quote
+        </a>
+        
+        <a
+          href="#contact"
+          className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          Free Consultation
+        </a>
+      </div>
+      
+      {/* Trust indicators */}
+      <div className="mt-8 pt-8 border-t border-gray-700">
+        <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            <span>Custom Engineering</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            <span>Fast Turnaround</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            <span>On-site Support</span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
       </div>
 
       {/* Contact Form Modal */}

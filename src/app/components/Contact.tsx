@@ -102,7 +102,7 @@ export default function Contact() {
         throw new Error("Failed to send email");
       }
     } catch (err) {
-      console.error("Email sending error:", err);
+      // console.error("Email sending error:", err);
       setError(
         "There was an error sending your message. Please try again or contact us directly at deckscaffgh@outlook.com"
       );

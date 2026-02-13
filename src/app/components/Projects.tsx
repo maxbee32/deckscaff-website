@@ -449,7 +449,7 @@ export default function Projects() {
         const errorMessage = err instanceof Error 
           ? err.message 
           : 'An unknown error occurred';
-        console.error("Error fetching projects:", err);
+        // console.error("Error fetching projects:", err);
         setError(`Failed to load projects. ${errorMessage}`);
       } finally {
         setLoading(false);
