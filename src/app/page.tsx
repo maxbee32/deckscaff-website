@@ -9,12 +9,15 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import Materials from './components/Materials'
 import ClientLogos from './components/ClientLogos'
-
+import VideoHero from './components/VideoHero'
 export default function Home() {
   return (
     <main className="relative">
       <Header />
-      <Hero />
+      {/* <Hero /> */}
+      <VideoHero />
+
+
       <Services />
       <WhyChooseUs />
       <ClientLogos />
