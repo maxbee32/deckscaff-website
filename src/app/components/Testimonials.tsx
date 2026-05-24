@@ -10,6 +10,15 @@ interface Testimonial {
   rating: number;
 }
 
+interface ApiTestimonial {
+  id?: number | string;
+  clientName?: string;
+  clientCompany?: string;
+  project?: string;
+  testimonial?: string;
+  rating?: number;
+}
+
 export default function Testimonials() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,14 +31,16 @@ export default function Testimonials() {
         const response = await fetch(`${API_BASE_URL}/api/auth/get-testimonials`);
         const data = await response.json();
         
-        const mapped = Array.isArray(data) ? data.map((t: any, i: number) => ({
-          id: t.id?.toString() || `t-${i}`,
-          clientName: t.clientName || "Anonymous",
-          clientCompany: t.clientCompany || "Client",
-          project: t.project || "Project",
-          testimonial: t.testimonial || "",
-          rating: t.rating || 5,
-        })) : [];
+        const mapped: Testimonial[] = Array.isArray(data) 
+          ? data.map((t: ApiTestimonial, i: number) => ({
+              id: t.id?.toString() || `t-${i}`,
+              clientName: t.clientName || "Anonymous",
+              clientCompany: t.clientCompany || "Client",
+              project: t.project || "Project",
+              testimonial: t.testimonial || "",
+              rating: t.rating || 5,
+            }))
+          : [];
         
         setTestimonials(mapped);
       } catch (err) {
@@ -68,7 +79,7 @@ export default function Testimonials() {
             What Our <span className="text-orange-500">Clients Say</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Real feedback from the companies we've worked with
+            Real feedback from the companies we&apos;ve worked with
           </p>
         </div>
 

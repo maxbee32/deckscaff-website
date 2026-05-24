@@ -57,7 +57,7 @@ const testimonials: Testimonial[] = [
     id: 5,
     position: "Project Director",
     company: "Jenspak Limited",
-    quote: "The most reliable scaffolding company we've worked with. Their rapid deployment and 24/7 support saved us during a critical project phase.",
+    quote: "The most reliable scaffolding company we&apos;ve worked with. Their rapid deployment and 24/7 support saved us during a critical project phase.",
     rating: 5,
     projectType: "Factory Expansion",
   },
@@ -65,7 +65,7 @@ const testimonials: Testimonial[] = [
     id: 6,
     position: "Construction Manager",
     company: "Chicos Construction",
-    quote: "Deckscaff's team is professional, punctual, and thorough. They provided detailed safety briefings and their equipment is always in perfect condition.",
+    quote: "Deckscaff&apos;s team is professional, punctual, and thorough. They provided detailed safety briefings and their equipment is always in perfect condition.",
     rating: 5,
     projectType: "Residential Tower",
   },
@@ -172,72 +172,6 @@ function ClientCounter() {
   );
 }
 
-// Testimonial Card Component - No names, just position & company
-function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; index: number }) {
-  const [isVisible, setIsVisible] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={cardRef}
-      className={`bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 flex flex-col h-full ${
-        isVisible ? "animate-fade-in-up" : "opacity-0"
-      }`}
-      style={{ animationDelay: `${index * 0.1}s` }}
-    >
-      {/* Quote Icon */}
-      <div className="mb-4">
-        <svg className="w-10 h-10 text-orange-300/50" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-        </svg>
-      </div>
-
-      {/* Quote */}
-      <p className="text-gray-600 leading-relaxed mb-4 flex-grow">
-        "{testimonial.quote}"
-      </p>
-
-      {/* Rating Stars */}
-      <div className="flex gap-1 mb-4">
-        {[...Array(testimonial.rating)].map((_, i) => (
-          <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-          </svg>
-        ))}
-      </div>
-
-      {/* Client Position & Company - No name */}
-      <div className="pt-4 border-t border-gray-100">
-        <p className="font-semibold text-gray-900">{testimonial.position}</p>
-        <p className="text-sm text-gray-500">{testimonial.company}</p>
-        {testimonial.projectType && (
-          <span className="inline-block mt-1 text-xs text-orange-500 font-medium">
-            {testimonial.projectType}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function ClientLogos() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
@@ -294,7 +228,7 @@ export default function ClientLogos() {
             Trusted by <span className="text-orange-500">Industry Leaders</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            We're proud to have collaborated with reputable companies across Ghana
+            We&apos;re proud to have collaborated with reputable companies across Ghana
           </p>
         </div>
 
@@ -336,7 +270,7 @@ export default function ClientLogos() {
             {/* Content */}
             <div className="relative z-10">
               <p className="text-xl md:text-2xl leading-relaxed mb-6">
-                "{currentTestimonial.quote}"
+                &quot;{currentTestimonial.quote}&quot;
               </p>
               
               <div className="flex items-center justify-between flex-wrap gap-4">

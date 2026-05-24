@@ -22,7 +22,7 @@ export default function VideoHero() {
     }
   };
 
-  const handleVideoError = (e: any) => {
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
     console.error("Video failed to load:", e);
     setVideoError(true);
   };
@@ -81,7 +81,7 @@ export default function VideoHero() {
         <div className="absolute inset-0 bg-black/50" />
       </div>
 
-      {/* Content - Added padding-bottom to prevent overlap with scroll indicator */}
+      {/* Content */}
       <div className="relative h-full flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div
@@ -89,22 +89,20 @@ export default function VideoHero() {
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             }`}
           >
-    
-
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.2] mb-6">
               Premium
               <span className="block text-orange-500">Scaffolding</span>
               <span className="block text-3xl sm:text-4xl md:text-5xl text-white/80 mt-2">
-                & Formwork Solutions
+                &amp; Formwork Solutions
               </span>
             </h1>
 
-            {/* Description */}
+            {/* Description - Fixed unescaped apostrophe */}
             <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mb-8 leading-relaxed">
               We combine engineering excellence with uncompromising safety
-              standards. From high-rise towers to industrial complexes, we've
-              been Ghana's trusted scaffolding partner since 2008.
+              standards. From high-rise towers to industrial complexes, we&apos;ve
+              been Ghana&apos;s trusted scaffolding partner since 2008.
             </p>
 
             {/* CTA Buttons */}
@@ -150,7 +148,7 @@ export default function VideoHero() {
               </a>
             </div>
 
-            {/* Trust Indicators - Clean, no overlap */}
+            {/* Trust Indicators */}
             <div className="flex flex-wrap justify-between sm:justify-start gap-4 sm:gap-8 pt-6 sm:pt-8 border-t border-white/20">
               <div className="text-center sm:text-left">
                 <div className="text-2xl sm:text-3xl font-bold text-white">
@@ -181,7 +179,7 @@ export default function VideoHero() {
         </div>
       </div>
 
-      {/* Scroll Indicator - Positioned below content, won't overlap */}
+      {/* Scroll Indicator */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div className="flex flex-col items-center gap-1">
           <span className="text-white/40 text-[8px] sm:text-[10px] tracking-[0.2em]">

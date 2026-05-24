@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface Project {
   id: string;
@@ -173,7 +174,7 @@ function EmptyProjectsState() {
       </h3>
       
       <p className="text-gray-300 mb-6 leading-relaxed">
-        We're currently compiling our portfolio of completed projects. 
+        We&apos;re currently compiling our portfolio of completed projects. 
         Check back soon to see our impressive work across Ghana.
       </p>
 
@@ -371,8 +372,7 @@ export default function Projects() {
 
         setProjects(projectsData);
         setError(null);
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      } catch {
         setError(`Failed to load projects. Please try again later.`);
       } finally {
         setLoading(false);
@@ -550,35 +550,40 @@ export default function Projects() {
               <div className={`h-48 relative overflow-hidden bg-gradient-to-br ${project.color}`}>
                 {project.images.length > 0 ? (
                   <>
-                    <img 
-                      src={project.images[0].url} 
-                      alt={project.title}
-                      className="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700"
-                      onError={(e) => {
-                        e.currentTarget.src = defaultProjectImages[index % defaultProjectImages.length];
-                      }}
-                      loading="lazy"
-                    />
+                    <div className="relative w-full h-full">
+                      <Image 
+                        src={project.images[0].url} 
+                        alt={project.title}
+                        fill
+                        className="object-cover opacity-80 group-hover:scale-110 transition-transform duration-700"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = defaultProjectImages[index % defaultProjectImages.length];
+                        }}
+                        unoptimized={project.images[0].url.startsWith('http')}
+                      />
+                    </div>
                     {project.images.length > 1 && (
-                      <div className="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                      <div className="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm z-10">
                         +{project.images.length - 1} more
                       </div>
                     )}
                   </>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <img 
+                  <div className="relative w-full h-full">
+                    <Image 
                       src={defaultProjectImages[index % defaultProjectImages.length]}
                       alt="Default project image"
-                      className="w-full h-full object-cover opacity-80"
-                      loading="lazy"
+                      fill
+                      className="object-cover opacity-80"
+                      unoptimized
                     />
                     <div className="absolute inset-0 bg-black/30"></div>
                   </div>
                 )}
                 
                 {project.status && (
-                  <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                  <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm z-10">
                     {getStatusText(project.status)}
                   </div>
                 )}
@@ -689,7 +694,7 @@ export default function Projects() {
         )}
       </div>
 
-      {/* Project Details Modal - Keep as is from your original */}
+      {/* Project Details Modal - Fixed img to Image */}
       {showDetailsModal && selectedProject && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/90" onClick={closeDetailsModal}>
           <div className="relative max-w-5xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -847,14 +852,19 @@ export default function Projects() {
                   <div className="space-y-6">
                     {selectedProject.images.length > 0 ? (
                       <div className="bg-gray-900 rounded-lg overflow-hidden">
-                        <img
-                          src={selectedProject.images[selectedImageIndex].url}
-                          alt={`${selectedProject.title} - Image ${selectedImageIndex + 1}`}
-                          className="w-full h-[400px] object-contain bg-black"
-                          onError={(e) => {
-                            e.currentTarget.src = defaultProjectImages[0];
-                          }}
-                        />
+                        <div className="relative w-full h-[400px]">
+                          <Image
+                            src={selectedProject.images[selectedImageIndex].url}
+                            alt={`${selectedProject.title} - Image ${selectedImageIndex + 1}`}
+                            fill
+                            className="object-contain bg-black"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = defaultProjectImages[0];
+                            }}
+                            unoptimized={selectedProject.images[selectedImageIndex].url.startsWith('http')}
+                          />
+                        </div>
                         
                         {selectedProject.images.length > 1 && (
                           <div className="flex justify-between p-4 bg-gray-800">
@@ -888,11 +898,17 @@ export default function Projects() {
                             <button
                               key={image.id}
                               onClick={() => setSelectedImageIndex(idx)}
-                              className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                                 selectedImageIndex === idx ? 'border-orange-500 scale-105' : 'border-gray-700 hover:border-gray-500'
                               }`}
                             >
-                              <img src={image.url} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                              <Image
+                                src={image.url}
+                                alt={`Thumbnail ${idx + 1}`}
+                                fill
+                                className="object-cover"
+                                unoptimized={image.url.startsWith('http')}
+                              />
                             </button>
                           ))}
                         </div>

@@ -114,7 +114,7 @@ export default function Contact() {
       } else {
         throw new Error("Failed to send email");
       }
-    } catch (err) {
+    } catch {
       setError(
         "There was an error sending your message. Please try again or contact us directly at deckscaffgh@outlook.com"
       );
@@ -152,7 +152,7 @@ export default function Contact() {
           <div className={`space-y-8 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
             {/* Main Contact Card */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Let's Talk</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Let&apos;s Talk</h3>
               <div className="space-y-6">
                 <div className="flex items-start gap-4 group">
                   <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -191,7 +191,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Service Areas</h4>
-                    <p className="text-gray-600">Accra, Tema, Kasoa & Nationwide</p>
+                    <p className="text-gray-600">Accra, Tema, Kasoa &amp; Nationwide</p>
                   </div>
                 </div>
 
@@ -220,7 +220,7 @@ export default function Contact() {
                 <h3 className="font-bold text-gray-900 text-lg">Quick Response Guarantee</h3>
               </div>
               <p className="text-gray-600 text-sm leading-relaxed">
-                We understand that construction projects move fast. That's why we guarantee to respond to all inquiries within <span className="font-semibold text-orange-600">2 hours</span> during business hours.
+                We understand that construction projects move fast. That&apos;s why we guarantee to respond to all inquiries within <span className="font-semibold text-orange-600">2 hours</span> during business hours.
               </p>
             </div>
 
@@ -263,7 +263,7 @@ export default function Contact() {
                   <div>
                     <h3 className="font-bold text-green-800">Message Sent Successfully!</h3>
                     <p className="text-green-700 text-sm mt-1">
-                      Thank you for your inquiry. We'll contact you within 2 hours.
+                      Thank you for your inquiry. We&apos;ll contact you within 2 hours.
                     </p>
                   </div>
                 </div>
@@ -413,7 +413,7 @@ export default function Contact() {
               </button>
 
               <p className="text-xs text-gray-400 text-center">
-                We'll contact you within 2 hours to discuss your project requirements.
+                We&apos;ll contact you within 2 hours to discuss your project requirements.
               </p>
             </form>
           </div>

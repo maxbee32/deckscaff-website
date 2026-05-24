@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import emailjs from "@emailjs/browser";
 
 interface MaterialItem {
@@ -143,7 +144,7 @@ function EmptyMaterialsState() {
       
       <p className="text-gray-600 mb-6 leading-relaxed">
         Our team is carefully organizing and updating our materials inventory. 
-        We're adding high-quality scaffolding equipment to serve you better.
+        We&apos;re adding high-quality scaffolding equipment to serve you better.
       </p>
 
       {/* Info Cards */}
@@ -214,7 +215,6 @@ export default function Materials() {
   
   const [activeFilter, setActiveFilter] = useState<"all" | "FOR_RENT" | "FOR_SALE">("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [showCallOptions, setShowCallOptions] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialItem | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -266,8 +266,7 @@ export default function Materials() {
         
         setMaterials(mappedMaterials);
         setFetchError(null);
-      } catch (err) {
-        console.error("Error fetching materials:", err);
+      } catch {
         setFetchError("Failed to load materials. Please try again later.");
       } finally {
         setLoading(false);
@@ -311,8 +310,6 @@ export default function Materials() {
     setShowDetailsModal(false);
     setSelectedDetailsMaterial(null);
   };
-
-  const handleCallClick = () => setShowCallOptions(true);
 
   const handleQuoteRequest = (material: MaterialItem) => {
     if (material.status === "OUT_OF_STOCK" || material.status === "DISCONTINUED") return;
@@ -370,7 +367,7 @@ export default function Materials() {
       } else {
         throw new Error("Failed to send email");
       }
-    } catch (err) {
+    } catch {
       setFormError("There was an error sending your request. Please try again or contact us directly.");
     } finally {
       setIsSubmitting(false);
@@ -379,7 +376,6 @@ export default function Materials() {
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.target) {
-      setShowCallOptions(false);
       setShowContactModal(false);
     }
   };
@@ -534,20 +530,23 @@ export default function Materials() {
               className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:transform hover:-translate-y-2"
             >
               <div className="relative">
-                <div className="h-48 bg-gray-100 overflow-hidden">
-                  <img
+                <div className="h-48 bg-gray-100 overflow-hidden relative">
+                  <Image
                     src={material.image}
                     alt={material.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
-                      e.currentTarget.src = getDefaultImageUrl();
+                      const target = e.target as HTMLImageElement;
+                      target.src = getDefaultImageUrl();
                     }}
+                    unoptimized={material.image.startsWith('http')}
                   />
                 </div>
-                <div className={`absolute top-4 right-4 ${getStatusColor(material.status)} text-white px-3 py-1 rounded-full text-xs font-semibold`}>
+                <div className={`absolute top-4 right-4 ${getStatusColor(material.status)} text-white px-3 py-1 rounded-full text-xs font-semibold z-10`}>
                   {getStatusText(material.status)}
                 </div>
-                <div className={`absolute top-4 left-4 ${material.materialType === "FOR_RENT" ? "bg-blue-500" : "bg-green-500"} text-white px-3 py-1 rounded-full text-xs font-semibold`}>
+                <div className={`absolute top-4 left-4 ${material.materialType === "FOR_RENT" ? "bg-blue-500" : "bg-green-500"} text-white px-3 py-1 rounded-full text-xs font-semibold z-10`}>
                   {material.materialType === "FOR_RENT" ? "FOR RENT" : "FOR SALE"}
                 </div>
               </div>
@@ -681,7 +680,7 @@ export default function Materials() {
                     </svg>
                     <div>
                       <h3 className="font-bold text-green-800">Request Sent Successfully!</h3>
-                      <p className="text-green-700 text-sm">We'll contact you within 2 hours.</p>
+                      <p className="text-green-700 text-sm">We&apos;ll contact you within 2 hours.</p>
                     </div>
                   </div>
                 </div>
@@ -703,14 +702,19 @@ export default function Materials() {
 
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={selectedMaterial.image}
-                    alt={selectedMaterial.name}
-                    className="w-12 h-12 object-cover rounded"
-                    onError={(e) => {
-                      e.currentTarget.src = getDefaultImageUrl();
-                    }}
-                  />
+                  <div className="relative w-12 h-12 rounded overflow-hidden flex-shrink-0">
+                    <Image
+                      src={selectedMaterial.image}
+                      alt={selectedMaterial.name}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = getDefaultImageUrl();
+                      }}
+                      unoptimized={selectedMaterial.image.startsWith('http')}
+                    />
+                  </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">{selectedMaterial.name}</h4>
                     <p className="text-sm text-gray-600">{selectedMaterial.category}</p>
@@ -720,6 +724,7 @@ export default function Materials() {
               </div>
 
               <form onSubmit={handleFormSubmit} className="space-y-4">
+                {/* Form fields remain the same */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
                   <input
@@ -843,14 +848,17 @@ export default function Materials() {
               </div>
 
               <div className="mb-6">
-                <div className="h-64 bg-gray-100 rounded-lg overflow-hidden">
-                  <img
+                <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+                  <Image
                     src={selectedDetailsMaterial.image}
                     alt={selectedDetailsMaterial.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = getDefaultImageUrl();
+                      const target = e.target as HTMLImageElement;
+                      target.src = getDefaultImageUrl();
                     }}
+                    unoptimized={selectedDetailsMaterial.image.startsWith('http')}
                   />
                 </div>
               </div>

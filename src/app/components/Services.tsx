@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 
 interface Service {
   id: string;
@@ -216,7 +217,7 @@ function ServicesMaintenance() {
           Services Under Maintenance
         </h3>
         <p className="text-gray-600 mb-6 leading-relaxed">
-          We're currently updating our service catalog with exciting new
+          We&apos;re currently updating our service catalog with exciting new
           offerings. Our team is working hard to bring you the best scaffolding
           solutions in Ghana.
         </p>
@@ -404,38 +405,8 @@ export default function Services() {
     }
   };
 
-  // Fetch services
-  const fetchServices = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const cachedServices = loadFromCache();
-      if (cachedServices && cachedServices.length > 0) {
-        setServices(cachedServices);
-        setUsingCachedData(true);
-        setLoading(false);
-        fetchFreshServices();
-        return;
-      }
-
-      await fetchFreshServices();
-    } catch (err) {
-      const cachedServices = loadFromCache();
-      if (cachedServices && cachedServices.length > 0) {
-        setServices(cachedServices);
-        setUsingCachedData(true);
-        setError(null);
-        setLoading(false);
-      } else {
-        setError("services_down");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFreshServices = async () => {
+  // Fetch fresh services from API
+  const fetchFreshServices = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/get-services`, {
         headers: {
@@ -510,14 +481,45 @@ export default function Services() {
       } else {
         setError("no_services");
       }
-    } catch (err) {
+    } catch {
       setError("services_down");
     }
-  };
+  }, [API_BASE_URL]);
+
+  // Fetch services with cache
+  const fetchServices = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const cachedServices = loadFromCache();
+      if (cachedServices && cachedServices.length > 0) {
+        setServices(cachedServices);
+        setUsingCachedData(true);
+        setLoading(false);
+        fetchFreshServices();
+        return;
+      }
+
+      await fetchFreshServices();
+    } catch {
+      const cachedServices = loadFromCache();
+      if (cachedServices && cachedServices.length > 0) {
+        setServices(cachedServices);
+        setUsingCachedData(true);
+        setError(null);
+        setLoading(false);
+      } else {
+        setError("services_down");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchFreshServices]);
 
   useEffect(() => {
     fetchServices();
-  }, []);
+  }, [fetchServices]);
 
   const handleServiceClick = (service: Service) => {
     setSelectedService(service);
@@ -642,17 +644,19 @@ export default function Services() {
               <div className="relative h-52 overflow-hidden bg-gradient-to-br from-orange-100 to-blue-100">
                 {service.image ? (
                   <>
-                    <img
+                    <Image
                       src={service.image}
                       alt={service.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => {
-                        e.currentTarget.src =
+                        const target = e.target as HTMLImageElement;
+                        target.src =
                           defaultServiceImages[
                             index % defaultServiceImages.length
                           ];
                       }}
-                      loading="lazy"
+                      unoptimized={service.image.startsWith("http")}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </>
@@ -676,7 +680,7 @@ export default function Services() {
 
                 {/* Status Badge - IMPROVED */}
                 {service.status && service.status !== "ACTIVE" && (
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-3 right-3 z-10">
                     <span
                       className={`px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-sm shadow-lg ${
                         service.status === "COMING_SOON"
@@ -697,7 +701,7 @@ export default function Services() {
 
                 {/* Category Badge - MOVED to bottom left */}
                 {service.category && (
-                  <div className="absolute bottom-3 left-3">
+                  <div className="absolute bottom-3 left-3 z-10">
                     <span className="px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-sm bg-white/90 shadow-lg text-orange-600">
                       {service.category}
                     </span>
@@ -789,7 +793,7 @@ export default function Services() {
               href="#contact"
               className="inline-flex items-center gap-2 text-orange-600 font-semibold hover:text-orange-700 transition-colors group"
             >
-              <span>Can't find what you're looking for?</span>
+              <span>Can&apos;t find what you&apos;re looking for?</span>
               <svg
                 className="w-4 h-4 group-hover:translate-x-1 transition-transform"
                 fill="none"
@@ -847,14 +851,17 @@ export default function Services() {
               </div>
 
               <div className="mb-6">
-                <div className="h-64 bg-gray-100 rounded-xl overflow-hidden">
-                  <img
+                <div className="relative h-64 bg-gray-100 rounded-xl overflow-hidden">
+                  <Image
                     src={selectedService.image}
                     alt={selectedService.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = defaultServiceImages[0];
+                      const target = e.target as HTMLImageElement;
+                      target.src = defaultServiceImages[0];
                     }}
+                    unoptimized={selectedService.image.startsWith("http")}
                   />
                 </div>
               </div>
@@ -930,7 +937,7 @@ export default function Services() {
                   selectedService.features.length > 0 && (
                     <div>
                       <h5 className="text-lg font-bold text-gray-900 mb-4">
-                        Features & Benefits
+                        Features &amp; Benefits
                       </h5>
                       <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {selectedService.features.map((feature, idx) => (
