@@ -6,10 +6,21 @@ export default function VideoHero() {
   const [isVisible, setIsVisible] = useState(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setIsVisible(true);
+    
+    // Detect mobile device based on screen width
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const handleVideoLoad = () => {
@@ -26,6 +37,9 @@ export default function VideoHero() {
     console.error("Video failed to load:", e);
     setVideoError(true);
   };
+
+  // Determine which video source to use
+  const videoSource = isMobile ? "/videos/hero-video-mobile.mp4" : "/videos/hero-video.mp4";
 
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden">
@@ -60,6 +74,7 @@ export default function VideoHero() {
         ) : (
           <video
             ref={videoRef}
+            key={videoSource}
             className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto object-cover transform -translate-x-1/2 -translate-y-1/2"
             style={{
               opacity: isVideoLoaded ? 1 : 0,
@@ -69,11 +84,12 @@ export default function VideoHero() {
             muted
             playsInline
             preload="auto"
+            autoPlay
             onLoadedData={handleVideoLoad}
             onError={handleVideoError}
             poster="/images/video-poster.jpg"
           >
-            <source src="/videos/hero-video.mp4" type="video/mp4" />
+            <source src={videoSource} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         )}
@@ -98,7 +114,7 @@ export default function VideoHero() {
               </span>
             </h1>
 
-            {/* Description - Fixed unescaped apostrophe */}
+            {/* Description */}
             <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mb-8 leading-relaxed">
               We combine engineering excellence with uncompromising safety
               standards. From high-rise towers to industrial complexes, we&apos;ve
