@@ -694,7 +694,7 @@ export default function Projects() {
         )}
       </div>
 
-      {/* Project Details Modal - Fixed img to Image */}
+      {/* Project Details Modal */}
       {showDetailsModal && selectedProject && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/90" onClick={closeDetailsModal}>
           <div className="relative max-w-5xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -807,7 +807,9 @@ export default function Projects() {
                       </div>
                     )}
 
-                    {(selectedProject.challenges?.length > 0 || selectedProject.solutions?.length > 0) && (
+                    {/* FIXED: Challenges and Solutions section - TypeScript error resolved */}
+                    {((selectedProject.challenges && selectedProject.challenges.length > 0) || 
+                       (selectedProject.solutions && selectedProject.solutions.length > 0)) && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {selectedProject.challenges && selectedProject.challenges.length > 0 && (
                           <div className="space-y-3">
