@@ -1,4 +1,3 @@
-// app/robots.ts
 import { MetadataRoute } from 'next'
 
 // Add this line to indicate this route can be statically generated
