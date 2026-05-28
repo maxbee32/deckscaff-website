@@ -63,7 +63,7 @@ export default function Contact() {
     setError("");
 
     const serviceID =
-      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_ym97vfw";
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_sowybvs";
     const templateID =
       process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_47fiyww";
     const publicKey =
