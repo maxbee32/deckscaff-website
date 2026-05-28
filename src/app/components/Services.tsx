@@ -264,7 +264,7 @@ function ServicesMaintenance() {
         </div>
 
         <p className="text-xs text-gray-400 mt-6">
-          Need immediate assistance? Call us: +233 (0) 30 123 4567
+          Need immediate assistance? Call us: +233 (0) 24 544 6160
         </p>
       </div>
     </div>
