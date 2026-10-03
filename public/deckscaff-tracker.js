@@ -4,7 +4,7 @@
     class DeckScaffTracker {
         constructor(apiUrl) {
             // Fixed: Added double slash after http
-            this.apiUrl = apiUrl || 'https://deckstaff-website-be.onrender.com/api/auth/track';
+            this.apiUrl = apiUrl || 'https://deckscaffbe-0dc59.containers.snapdeploy.app/api/auth/track';
             // Or use the deployed backend:
             // this.apiUrl = apiUrl || 'https://deckstaff-website-be.onrender.com/api/auth/track';
         }

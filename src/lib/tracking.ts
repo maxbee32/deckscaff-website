@@ -16,8 +16,8 @@ interface VisitorData {
 class DeckScaffTracker {
   private apiUrl: string;
 
-  constructor(apiUrl: string = 'https://deckstaff-website-be.onrender.com/api/auth/track') {
-    // https://deckstaff-website-be.onrender.com
+  constructor(apiUrl: string = 'https://deckscaffbe-0dc59.containers.snapdeploy.app/api/auth/track') {
+      // https://deckstaff-website-be.onrender.com
     
     this.apiUrl = apiUrl;
   }

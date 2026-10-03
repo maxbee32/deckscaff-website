@@ -232,7 +232,7 @@ export default function Materials() {
     quantity: "1",
   });
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://deckstaff-website-be.onrender.com";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://deckscaffbe-0dc59.containers.snapdeploy.app";
 
   // Fetch materials from API
   useEffect(() => {

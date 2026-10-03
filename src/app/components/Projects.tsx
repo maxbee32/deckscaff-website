@@ -268,7 +268,7 @@ export default function Projects() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'gallery'>('overview');
   
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://deckstaff-website-be.onrender.com";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://deckscaffbe-0dc59.containers.snapdeploy.app";
 
   // Fetch projects from API
   useEffect(() => {

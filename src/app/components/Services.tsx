@@ -372,7 +372,7 @@ export default function Services() {
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
-    "https://deckstaff-website-be.onrender.com";
+    "https://deckscaffbe-0dc59.containers.snapdeploy.app";
 
   // Load cached services
   const loadFromCache = (): Service[] | null => {
